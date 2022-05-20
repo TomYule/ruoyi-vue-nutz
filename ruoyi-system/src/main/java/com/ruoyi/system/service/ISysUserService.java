@@ -2,13 +2,14 @@ package com.ruoyi.system.service;
 
 import java.util.List;
 import com.ruoyi.common.core.domain.entity.SysUser;
+import com.ruoyi.common.core.service.BaseService;
 
 /**
  * 用户 业务层
  * 
  * @author ruoyi
  */
-public interface ISysUserService
+public interface ISysUserService extends BaseService<SysUser>
 {
     /**
      * 根据条件分页查询用户列表

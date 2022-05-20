@@ -14,6 +14,24 @@ ruoyi:
   addressEnabled: false
   # 验证码类型 math 数组计算 char 字符验证
   captchaType: math
+#nutz-dao
+nutz:
+  dao:
+    runtime:
+      add-column: true
+      basepackage:
+        - com.ruoyi.**.domain
+      check-index: true
+      create: true
+      delete-column: true
+      foce-create: false
+      migration: true
+    sqlmanager:
+      paths:
+        - sqls
+  json:
+    enabled: true
+    mode: compact
 
 # 开发环境配置
 server:
