@@ -26,15 +26,15 @@ import org.nutz.dao.entity.annotation.*;
  */
 @ApiModel(description = "用户信息表 entity.\n@author haiming")
 @Table("sys_user")
-public class SysUser extends BaseModel implements Serializable {
+public class SysUser extends BaseModel {
     private static final long serialVersionUID = 1L;
 
     /** 用户ID */
-    @Excel(name = "用户序号", cellType = ColumnType.NUMERIC, prompt = "用户编号")
     @Id
     @Column("user_id")
     @Comment("用户ID")
-    @ColDefine(type = ColType.VARCHAR, width = 64)
+    @ColDefine(type = ColType.INT, width = 64)
+    @Excel(name = "用户序号", cellType = ColumnType.NUMERIC, prompt = "用户编号")
     private Long userId;
 
     /** 部门ID */

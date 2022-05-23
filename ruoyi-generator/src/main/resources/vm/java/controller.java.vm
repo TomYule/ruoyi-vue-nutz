@@ -43,16 +43,20 @@ public class ${ClassName}Controller extends BaseController
     @PreAuthorize("@ss.hasPermi('${permissionPrefix}:list')")
     @GetMapping("/list")
 #if($table.crud || $table.sub)
-    public TableDataInfo list(${ClassName} ${className})
-    {
-        startPage();
-        List<${ClassName}> list = ${className}Service.select${ClassName}List(${className});
+    public TableDataInfo list(@Param("pageNum")Integer pageNum,
+                              @Param("pageSize")Integer pageSize,
+                                ${ClassName} ${className}) {
+        Cnd cnd = Cnd.NEW();
+        if (Lang.isNotEmpty(${className}) ){
+            //cnd.and("name", "like", "%" + name +"%");
+        }
+        List<${ClassName}> list = ${className}Service.query(cnd,pageNum,pageSize);
         return getDataTable(list);
     }
 #elseif($table.tree)
     public AjaxResult list(${ClassName} ${className})
     {
-        List<${ClassName}> list = ${className}Service.select${ClassName}List(${className});
+        List<${ClassName}> list = ${className}Service.query(cnd,pageNum,pageSize);
         return AjaxResult.success(list);
     }
 #end

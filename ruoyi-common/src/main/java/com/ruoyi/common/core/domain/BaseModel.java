@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * @author Hamming_Yu on 2018/12/29.
  */
-public abstract class BaseModel extends DataBaseEntity implements Serializable {
+public abstract class BaseModel implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**

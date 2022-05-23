@@ -9,12 +9,15 @@
 	<a href="https://gitee.com/y_project/RuoYi-Vue/blob/master/LICENSE"><img src="https://img.shields.io/github/license/mashape/apistatus.svg"></a>
 </p>
 
+##为什么写这个项目
+咱们的性情总是喜欢调和、折中的、譬如你说，这屋子太暗，说在这里开一个天窗，大家一定是不允许的，但你主张拆掉屋顶，他们就会来调和，愿意开天窗了  
+希望更多的小伙伴能了解nutz项目
 ## 平台简介
-
+采用若依项目 只修改了service dao兼容nutz
 若依是一套全部开源的快速开发平台，毫无保留给个人及企业免费使用。
 
 * 前端采用Vue、Element UI。
-* 后端采用Spring Boot、Spring Security、Redis & Jwt。
+* 后端采用Spring Boot、Nutz、Spring Security、Redis & Jwt。
 * 权限认证使用Jwt，支持多终端认证系统。
 * 支持加载动态权限菜单，多方式轻松权限控制。
 * 高效率开发，使用代码生成器可以一键生成前后端代码。
@@ -24,7 +27,12 @@
 * 特别鸣谢：[element](https://github.com/ElemeFE/element)，[vue-element-admin](https://github.com/PanJiaChen/vue-element-admin)，[eladmin-web](https://github.com/elunez/eladmin-web)。
 * 阿里云折扣场：[点我进入](http://aly.ruoyi.vip)，腾讯云秒杀场：[点我进入](http://txy.ruoyi.vip)&nbsp;&nbsp;
 * 阿里云优惠券：[点我领取](https://www.aliyun.com/minisite/goods?userCode=brki8iof&share_source=copy_link)，腾讯云优惠券：[点我领取](https://cloud.tencent.com/redirect.php?redirect=1025&cps_key=198c8df2ed259157187173bc7f4f32fd&from=console)&nbsp;&nbsp;
+## 为什么选择nutz
+科学无国界 科学家有祖国  
+nutz Java小伙伴们的另一种选择
+* 推荐Jpa项目: [jhipster](https://www.jhipster.tech/cn/)  
 
+![we_are_to_busy](doc/we_are_to_busy.jpg)
 ## 内置功能
 
 1.  用户管理：用户是系统操作者，该功能主要完成系统用户配置。

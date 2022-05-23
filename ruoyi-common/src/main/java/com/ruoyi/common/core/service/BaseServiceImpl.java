@@ -6,14 +6,24 @@ import org.nutz.dao.util.Daos;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.plugin.spring.boot.service.entity.DataBaseEntity;
+import org.nutz.service.IdNameEntityService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
  * @author Hamming_Yu on 2018/12/31.
  */
-public class BaseServiceImpl<T extends DataBaseEntity> extends org.nutz.plugin.spring.boot.service.BaseService<T> implements BaseService<T> {
+public class BaseServiceImpl<T> extends IdNameEntityService<T> implements BaseService<T> {
     protected final static int DEFAULT_PAGE_NUMBER = 10;
+
+    @Resource(type = Dao.class)
+    public void init(Dao dao) {
+        super.setDao(dao);
+    }
 
     public BaseServiceImpl() {
         super();
@@ -235,13 +245,14 @@ public class BaseServiceImpl<T extends DataBaseEntity> extends org.nutz.plugin.s
 
     /**
      * 分页查询
+     *
      * @param cnd
      * @param pageNumber
      * @param pageSize
      * @return
      */
     @Override
-    public List<T> query(Condition cnd, int pageNumber, int pageSize){
+    public List<T> query(Condition cnd, int pageNumber, int pageSize) {
         Pager pager = this.dao().createPager(pageNumber, pageSize);
         List<T> list = this.dao().query(this.getEntityClass(), cnd, pager);
         return list;
@@ -249,6 +260,7 @@ public class BaseServiceImpl<T extends DataBaseEntity> extends org.nutz.plugin.s
 
     /**
      * 更新
+     *
      * @param obj
      * @return
      */
@@ -309,14 +321,9 @@ public class BaseServiceImpl<T extends DataBaseEntity> extends org.nutz.plugin.s
         return this.dao().delete(this.getEntityClass(), name);
     }
 
-    /**
-     * 批量删除
-     *
-     * @param ids
-     */
     @Override
-    public void delete(Integer[] ids) {
-        this.dao().clear(getEntityClass(), Cnd.where("id", "in", ids));
+    public int delete(Condition cnd) {
+        return this.dao().clear(this.getEntityClass(), cnd);
     }
 
     /**
@@ -325,8 +332,8 @@ public class BaseServiceImpl<T extends DataBaseEntity> extends org.nutz.plugin.s
      * @param ids
      */
     @Override
-    public void delete(Long[] ids) {
-        this.dao().clear(getEntityClass(), Cnd.where("id", "in", ids));
+    public int delete(Integer[] ids) {
+        return this.dao().clear(getEntityClass(), Cnd.where("id", "in", ids));
     }
 
     /**
@@ -335,8 +342,18 @@ public class BaseServiceImpl<T extends DataBaseEntity> extends org.nutz.plugin.s
      * @param ids
      */
     @Override
-    public void delete(String[] ids) {
-        this.dao().clear(getEntityClass(), Cnd.where("id", "in", ids));
+    public int delete(Long[] ids) {
+        return this.dao().clear(getEntityClass(), Cnd.where("id", "in", ids));
+    }
+
+    /**
+     * 批量删除
+     *
+     * @param ids
+     */
+    @Override
+    public int delete(String[] ids) {
+       return this.dao().clear(getEntityClass(), Cnd.where("id", "in", ids));
     }
 
     /**
@@ -381,131 +398,56 @@ public class BaseServiceImpl<T extends DataBaseEntity> extends org.nutz.plugin.s
         return pageSize == 0 ? DEFAULT_PAGE_NUMBER : pageSize;
     }
 
-    /**
-     * 分页查询
-     * @param pageNumber
-     * @param pageSize
-     * @return
-     */
     @Override
-    public QueryResult listPage(int pageNumber, int pageSize){
-        Pager pager = this.dao().createPager(pageNumber, pageSize);
-        List<T> list = this.dao().query(this.getEntityClass(), null, pager);
-        pager.setRecordCount(this.dao().count(this.getEntityClass()));
-        return new QueryResult(list, pager);
-    }
-
-    /**
-     * 分页查询
-     * @param pageNumber
-     * @param pageSize
-     * @param cnd
-     * @return
-     */
-    @Override
-    public QueryResult listPage(int pageNumber, int pageSize, Condition cnd){
-        Pager pager = this.dao().createPager(pageNumber, pageSize);
+    public Page<T> query(Pageable pageable) {
+        Pager pager = this.dao().createPager(pageable.getPageNumber() + 1, pageable.getPageSize());
+        Cnd cnd = Cnd.NEW();
+        pageable.getSort().stream().forEach(sort -> {
+            if (sort.getDirection().isAscending()) {
+                cnd.asc(sort.getProperty());
+            }
+            if (sort.getDirection().isDescending()) {
+                cnd.desc(sort.getProperty());
+            }
+        });
         List<T> list = this.dao().query(this.getEntityClass(), cnd, pager);
         pager.setRecordCount(this.dao().count(getEntityClass(), cnd));
-        return new QueryResult(list, pager);
+        return new PageImpl(list, pageable, pager.getRecordCount());
     }
 
-//    @Override
-//    public QueryResult listPage(int pageNumber, int pageSize, Cnd cnd, String orderByColumn, String isAsc, String linkname){
-//        Pager pager = this.dao().createPager(pageNumber, pageSize);
-//        if (Strings.isNotBlank(orderByColumn) && Strings.isNotBlank(isAsc)) {
-//            MappingField field =dao().getEntity(this.getEntityClass()).getField(orderByColumn);
-//            if(Lang.isNotEmpty(field)){
-//                cnd.orderBy(field.getColumnName(),isAsc);
-//            }
-//        }
-//        List<T> list = this.dao().query(this.getEntityClass(), cnd, pager);
-//        if (!Strings.isBlank(linkname)) {
-//            this.dao().fetchLinks(list, linkname);
-//        }
-//        pager.setRecordCount(this.dao().count(getEntityClass(), cnd));
-//        return new QueryResult(list, pager);
-//    }
-//    /**
-//     * 分页查询数据封装
-//     * @param pageNumber
-//     * @param pageSize
-//     * @return
-//     */
-//    @Override
-//    public TableDataInfo tableList(Integer pageNumber, Integer pageSize){
-//        Pager pager=null;
-//        if(Lang.isNotEmpty(pageNumber) && Lang.isNotEmpty(pageSize)){
-//            pager = this.dao().createPager(pageNumber, pageSize);
-//        }
-//        List<T> list = this.dao().query(this.getEntityClass(), null, pager);
-//        return new TableDataInfo(list, this.dao().count(this.getEntityClass()));
-//    }
-//
-//    /**
-//     * 分页查询数据封装
-//     * @param pageNumber
-//     * @param pageSize
-//     * @param cnd
-//     * @return
-//     */
-//    @Override
-//    public TableDataInfo tableList(Integer pageNumber, Integer pageSize, Cnd cnd){
-//        Pager pager=null;
-//        if(Lang.isNotEmpty(pageNumber) && Lang.isNotEmpty(pageSize)){
-//            pager = this.dao().createPager(pageNumber, pageSize);
-//        }
-//        List<T> list = this.dao().query(this.getEntityClass(), cnd, pager);
-//        return new TableDataInfo(list, this.dao().count(this.getEntityClass(),cnd));
-//    }
-//
-//
-//    /**
-//     * 分页查询数据封装 查询关联数据
-//     *
-//     * @param pageNumber
-//     * @param pageSize
-//     * @param cnd
-//     * @param linkname
-//     * @return
-//     */
-//    @Override
-//    public TableDataInfo tableList(Integer pageNumber, Integer pageSize, Cnd cnd, String orderByColumn, String isAsc, String linkname) {
-//        Pager pager=null;
-//        if(Lang.isNotEmpty(pageNumber) && Lang.isNotEmpty(pageSize)){
-//            pager = this.dao().createPager(pageNumber, pageSize);
-//        }
-//        if (Strings.isNotBlank(orderByColumn) && Strings.isNotBlank(isAsc)) {
-//            MappingField field = dao().getEntity(this.getEntityClass()).getField(orderByColumn);
-//            if (Lang.isNotEmpty(field)) {
-//                cnd.orderBy(field.getColumnName(), isAsc);
-//            }
-//        }
-//        if (Strings.isBlank(linkname)) {
-//            List<T> list = this.dao().query(this.getEntityClass(), cnd, pager);
-//            return new TableDataInfo(list, this.dao().count(this.getEntityClass(), cnd));
-//        } else {
-//            List<T> list = this.dao().queryByJoin(this.getEntityClass(), linkname, cnd, pager);
-//            return new TableDataInfo(list, this.dao().count(this.getEntityClass(), cnd));
-//        }
-//    }
-//
-//
-//    public TableDataInfo tableListFetchLinks(Integer pageNumber, Integer pageSize, Cnd cnd, String orderByColumn, String isAsc, String linkname){
-//        Pager pager=null;
-//        if(Lang.isNotEmpty(pageNumber) && Lang.isNotEmpty(pageSize)){
-//            pager = this.dao().createPager(pageNumber, pageSize);
-//        }
-//        if (Strings.isNotBlank(orderByColumn) && Strings.isNotBlank(isAsc)) {
-//            MappingField field =dao().getEntity(this.getEntityClass()).getField(orderByColumn);
-//            if(Lang.isNotEmpty(field)){
-//                cnd.orderBy(field.getColumnName(),isAsc);
-//            }
-//        }
-//        List<T> list = this.dao().query(this.getEntityClass(), cnd, pager);
-//        if (!Strings.isBlank(linkname)) {
-//            this.dao().fetchLinks(list, linkname);
-//        }
-//        return new TableDataInfo(list, this.dao().count(this.getEntityClass(),cnd));
-//    }
+    @Override
+    public Page<T> query(Cnd cnd, Pageable pageable) {
+        Pager pager = this.dao().createPager(pageable.getPageNumber() + 1, pageable.getPageSize());
+        pageable.getSort().stream().forEach(sort -> {
+            if (sort.getDirection().isAscending()) {
+                cnd.asc(sort.getProperty());
+            }
+            if (sort.getDirection().isDescending()) {
+                cnd.desc(sort.getProperty());
+            }
+        });
+        List<T> list = this.dao().query(this.getEntityClass(), cnd, pager);
+        pager.setRecordCount(this.dao().count(getEntityClass(), cnd));
+        return new PageImpl(list, pageable, pager.getRecordCount());
+    }
+
+    @Override
+    public Page<T> query(Cnd cnd, String linkname, Pageable pageable) {
+        Pager pager = this.dao().createPager(pageable.getPageNumber() + 1, pageable.getPageSize());
+        pageable.getSort().stream().forEach(sort -> {
+            if (sort.getDirection().isAscending()) {
+                cnd.asc(sort.getProperty());
+            }
+            if (sort.getDirection().isDescending()) {
+                cnd.desc(sort.getProperty());
+            }
+        });
+        List<T> list = this.dao().query(this.getEntityClass(), cnd, pager);
+        if (!Strings.isBlank(linkname)) {
+            this.dao().fetchLinks(list, linkname);
+        }
+        pager.setRecordCount(this.dao().count(getEntityClass(), cnd));
+        return new PageImpl(list, pageable, pager.getRecordCount());
+    }
+
 }

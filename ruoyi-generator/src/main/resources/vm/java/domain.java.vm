@@ -6,10 +6,11 @@ import ${import};
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
+import org.nutz.dao.entity.annotation.*;
 #if($table.crud || $table.sub)
-import com.ruoyi.common.core.domain.BaseEntity;
+import com.ruoyi.common.core.domain.BaseModel;
 #elseif($table.tree)
-import com.ruoyi.common.core.domain.TreeEntity;
+import com.ruoyi.common.core.domain.TreeModel;
 #end
 
 /**
@@ -19,17 +20,29 @@ import com.ruoyi.common.core.domain.TreeEntity;
  * @date ${datetime}
  */
 #if($table.crud || $table.sub)
-#set($Entity="BaseEntity")
+#set($Entity="BaseModel")
 #elseif($table.tree)
-#set($Entity="TreeEntity")
+#set($Entity="TreeModel")
 #end
-public class ${ClassName} extends ${Entity}
-{
+@Table("${tableName}")
+public class ${ClassName} extends ${Entity}{
     private static final long serialVersionUID = 1L;
 
 #foreach ($column in $columns)
 #if(!$table.isSuperColumn($column.javaField))
     /** $column.columnComment */
+#if($column.columnName == $pkColumn.columnName )
+    #if('Long' == $column.javaType || 'Integer' == $column.javaType)
+    @Id
+    @ColDefine(type = ColType.INT, width = 32)
+    #else
+    @Name
+    @ColDefine(type = ColType.VARCHAR, width = 64)
+    @Prev(els = {@EL("uuid()")})
+    #end
+#end
+    @Column("$column.columnName")
+    @Comment("$column.columnComment")
 #if($column.list)
 #set($parentheseIndex=$column.columnComment.indexOf("（"))
 #if($parentheseIndex != -1)

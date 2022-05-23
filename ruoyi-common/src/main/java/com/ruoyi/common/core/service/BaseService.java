@@ -1,10 +1,9 @@
 package com.ruoyi.common.core.service;
 
-import org.nutz.dao.Chain;
-import org.nutz.dao.Condition;
-import org.nutz.dao.Dao;
-import org.nutz.dao.QueryResult;
+import org.nutz.dao.*;
 import org.nutz.dao.pager.Pager;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -59,6 +58,7 @@ public interface BaseService<T> {
      * @return 对象列表
      */
     List<T> query(Condition cnd);
+
 
     /**
      * 获取全部数据
@@ -171,26 +171,28 @@ public interface BaseService<T> {
 
     public int delete(String name);
 
-    /**
-     * 批量删除
-     *
-     * @param ids
-     */
-    public void delete(Integer[] ids);
+    public int delete( Condition cnd);
 
     /**
      * 批量删除
      *
      * @param ids
      */
-    public void delete(Long[] ids);
+    public int delete(Integer[] ids);
 
     /**
      * 批量删除
      *
      * @param ids
      */
-    public void delete(String[] ids);
+    public int delete(Long[] ids);
+
+    /**
+     * 批量删除
+     *
+     * @param ids
+     */
+    public int delete(String[] ids);
 
 
     /**
@@ -209,51 +211,28 @@ public interface BaseService<T> {
      */
     public int vDelete(String[] ids);
 
-
     /**
      * 分页查询
-     * @param pageNumber
-     * @param pageSize
+     * @param pageable
      * @return
      */
-    public QueryResult listPage(int pageNumber, int pageSize);
+    Page<T> query(Pageable pageable);
 
     /**
-     * 分页查询
-     * @param pageNumber
-     * @param pageSize
+     * 条件分页查询
      * @param cnd
+     * @param pageable
      * @return
      */
-    public QueryResult listPage(int pageNumber, int pageSize, Condition cnd);
+    Page<T> query(Cnd cnd, Pageable pageable);
 
-//    public QueryResult listPage(int pageNumber, int pageSize, Cnd cnd, String orderByColumn, String isAsc, String linkname);
-//
-//    /**
-//     * 分页查询数据封装
-//     * @param pageNumber
-//     * @param pageSize
-//     * @return
-//     */
-//    public TableDataInfo tableList(Integer pageNumber, Integer pageSize);
-//
-//    /**
-//     * 分页查询数据封装
-//     * @param pageNumber
-//     * @param pageSize
-//     * @param cnd
-//     * @return
-//     */
-//    public TableDataInfo tableList(Integer pageNumber, Integer pageSize, Cnd cnd);
-//
-//    /**
-//     * 分页查询数据封装 查询关联数据
-//     * @param pageNumber
-//     * @param pageSize
-//     * @param cnd
-//     * @param linkname
-//     * @return
-//     */
-//    public TableDataInfo tableList(Integer pageNumber, Integer pageSize, Cnd cnd, String orderByColumn, String isAsc, String linkname);
+    /**
+     * 条件分页 关联 查询
+     * @param cnd
+     * @param linkname
+     * @param pageable
+     * @return
+     */
+    Page<T> query(Cnd cnd, String linkname, Pageable pageable);
 
 }

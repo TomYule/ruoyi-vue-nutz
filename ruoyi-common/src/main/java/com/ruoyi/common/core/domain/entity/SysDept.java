@@ -6,47 +6,81 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import com.ruoyi.common.annotation.Excel;
+import com.ruoyi.common.core.domain.BaseModel;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.core.domain.BaseEntity;
+import org.nutz.dao.entity.annotation.*;
 
 /**
  * 部门表 sys_dept
  * 
  * @author ruoyi
  */
-public class SysDept extends BaseEntity
-{
+@Table("sys_dept")
+public class SysDept extends BaseModel {
     private static final long serialVersionUID = 1L;
 
-    /** 部门ID */
+    /** 部门id */
+    @Id
+    @ColDefine(type = ColType.INT, width = 32)
+    @Column("dept_id")
+    @Comment("部门id")
     private Long deptId;
 
-    /** 父部门ID */
+    /** 父部门id */
+    @Column("parent_id")
+    @Comment("父部门id")
+    @Excel(name = "父部门id")
     private Long parentId;
 
     /** 祖级列表 */
+    @Column("ancestors")
+    @Comment("祖级列表")
+    @Excel(name = "祖级列表")
     private String ancestors;
 
     /** 部门名称 */
+    @Column("dept_name")
+    @Comment("部门名称")
+    @Excel(name = "部门名称")
     private String deptName;
 
     /** 显示顺序 */
+    @Column("order_num")
+    @Comment("显示顺序")
+    @Excel(name = "显示顺序")
     private Integer orderNum;
 
     /** 负责人 */
+    @Column("leader")
+    @Comment("负责人")
+    @Excel(name = "负责人")
     private String leader;
 
     /** 联系电话 */
+    @Column("phone")
+    @Comment("联系电话")
+    @Excel(name = "联系电话")
     private String phone;
 
     /** 邮箱 */
+    @Column("email")
+    @Comment("邮箱")
+    @Excel(name = "邮箱")
     private String email;
 
-    /** 部门状态:0正常,1停用 */
+    /** 部门状态（0正常 1停用） */
+    @Column("status")
+    @Comment("部门状态（0正常 1停用）")
+    @Excel(name = "部门状态", readConverterExp = "0=正常,1=停用")
     private String status;
 
     /** 删除标志（0代表存在 2代表删除） */
+    @Column("del_flag")
+    @Comment("删除标志（0代表存在 2代表删除）")
     private String delFlag;
 
     /** 父部门名称 */

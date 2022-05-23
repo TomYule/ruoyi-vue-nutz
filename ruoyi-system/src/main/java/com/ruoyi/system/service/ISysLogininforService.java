@@ -1,6 +1,8 @@
 package com.ruoyi.system.service;
 
 import java.util.List;
+
+import com.ruoyi.common.core.service.BaseService;
 import com.ruoyi.system.domain.SysLogininfor;
 
 /**
@@ -8,8 +10,12 @@ import com.ruoyi.system.domain.SysLogininfor;
  * 
  * @author ruoyi
  */
-public interface ISysLogininforService
-{
+public interface ISysLogininforService extends BaseService<SysLogininfor> {
+
+    List<SysLogininfor> query(SysLogininfor sysLogininfor);
+
+    List<SysLogininfor> query(SysLogininfor sysLogininfor,int pageNumber, int pageSize);
+
     /**
      * 新增系统登录日志
      * 

@@ -2,38 +2,59 @@ package com.ruoyi.system.domain;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+
+import com.ruoyi.common.core.domain.BaseModel;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.annotation.Excel.ColumnType;
 import com.ruoyi.common.core.domain.BaseEntity;
+import org.nutz.dao.entity.annotation.*;
 
 /**
  * 参数配置表 sys_config
  * 
  * @author ruoyi
  */
-public class SysConfig extends BaseEntity
-{
+
+/**
+ * 参数配置对象 sys_config
+ *
+ * @author ruoyi
+ * @date 2022-05-23
+ */
+@Table("sys_config")
+public class SysConfig extends BaseModel {
     private static final long serialVersionUID = 1L;
 
     /** 参数主键 */
-    @Excel(name = "参数主键", cellType = ColumnType.NUMERIC)
+    @Id
+    @ColDefine(type = ColType.INT, width = 32)
+    @Column("config_id")
+    @Comment("参数主键")
     private Long configId;
 
     /** 参数名称 */
+    @Column("config_name")
+    @Comment("参数名称")
     @Excel(name = "参数名称")
     private String configName;
 
     /** 参数键名 */
+    @Column("config_key")
+    @Comment("参数键名")
     @Excel(name = "参数键名")
     private String configKey;
 
     /** 参数键值 */
+    @Column("config_value")
+    @Comment("参数键值")
     @Excel(name = "参数键值")
     private String configValue;
 
     /** 系统内置（Y是 N否） */
+    @Column("config_type")
+    @Comment("系统内置（Y是 N否）")
     @Excel(name = "系统内置", readConverterExp = "Y=是,N=否")
     private String configType;
 
