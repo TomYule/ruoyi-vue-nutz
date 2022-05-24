@@ -2,6 +2,7 @@ package com.ruoyi.system.service;
 
 import java.util.List;
 import com.ruoyi.common.core.domain.entity.SysUser;
+import com.ruoyi.common.core.page.TableData;
 import com.ruoyi.common.core.service.BaseService;
 
 /**
@@ -9,8 +10,10 @@ import com.ruoyi.common.core.service.BaseService;
  * 
  * @author ruoyi
  */
-public interface ISysUserService extends BaseService<SysUser>
-{
+public interface ISysUserService extends BaseService<SysUser>{
+    List<SysUser> query(SysUser sysUser);
+
+    TableData<SysUser> query(SysUser sysUser, int pageNumber, int pageSize);
     /**
      * 根据条件分页查询用户列表
      * 

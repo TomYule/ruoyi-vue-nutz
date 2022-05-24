@@ -246,11 +246,9 @@ public class SysMenuServiceImpl extends BaseServiceImpl<SysMenu> implements ISys
                     "on m.menu_id = rm.menu_id and rm.role_id = @roleId ) ";
         }
         sqlstr +=  " order by m.parent_id, m.order_num";
-        Sql sql = Sqls.create(sqlstr);
+        Sql sql = Sqls.fetchLong(sqlstr);
         sql.params().set("roleId" , roleId);
-        sql.setCallback(Sqls.callback.entities());
-        Entity<Long> entity = dao().getEntity(Long.class);
-        sql.setEntity(entity);
+        sql.setCallback(Sqls.callback.longs());
         dao().execute(sql);
         return  sql.getList(Long.class);
     }

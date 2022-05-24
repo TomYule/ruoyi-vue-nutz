@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.Validator;
 
+import com.ruoyi.common.core.page.TableData;
 import com.ruoyi.common.core.service.BaseServiceImpl;
+import com.ruoyi.system.service.*;
 import org.nutz.dao.Chain;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Sqls;
@@ -31,12 +33,6 @@ import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.system.domain.SysPost;
 import com.ruoyi.system.domain.SysUserPost;
 import com.ruoyi.system.domain.SysUserRole;
-import com.ruoyi.system.mapper.SysPostMapper;
-import com.ruoyi.system.mapper.SysRoleMapper;
-import com.ruoyi.system.mapper.SysUserPostMapper;
-import com.ruoyi.system.mapper.SysUserRoleMapper;
-import com.ruoyi.system.service.ISysConfigService;
-import com.ruoyi.system.service.ISysUserService;
 
 /**
  * 用户 业务层处理
@@ -45,25 +41,74 @@ import com.ruoyi.system.service.ISysUserService;
  */
 @Service
 public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements ISysUserService {
+
     private static final Logger log = LoggerFactory.getLogger(SysUserServiceImpl.class);
 
     @Autowired
-    private SysRoleMapper roleMapper;
+    private ISysUserRoleService userRoleService;
 
     @Autowired
-    private SysPostMapper postMapper;
-
-    @Autowired
-    private SysUserRoleMapper userRoleMapper;
-
-    @Autowired
-    private SysUserPostMapper userPostMapper;
+    private ISysUserPostService userPostService;
 
     @Autowired
     private ISysConfigService configService;
 
     @Autowired
     protected Validator validator;
+
+
+    public Cnd queryWrapper(SysUser sysUser) {
+        Cnd cnd = Cnd.NEW();
+        if (Lang.isNotEmpty(sysUser)){
+            if (Lang.isNotEmpty(sysUser.getDeptId())){
+                cnd.and("dept_id" , "=" , sysUser.getDeptId());
+            }
+            if (Lang.isNotEmpty(sysUser.getUserName())){
+                cnd.and("user_name" , "like" , "%" + sysUser.getUserName() + "%");
+            }
+            if (Lang.isNotEmpty(sysUser.getNickName())){
+                cnd.and("nick_name" , "like" , "%" + sysUser.getNickName() + "%");
+            }
+            if (Lang.isNotEmpty(sysUser.getEmail())){
+                cnd.and("email" , "=" , sysUser.getEmail());
+            }
+            if (Lang.isNotEmpty(sysUser.getPhonenumber())){
+                cnd.and("phonenumber" , "=" , sysUser.getPhonenumber());
+            }
+            if (Lang.isNotEmpty(sysUser.getSex())){
+                cnd.and("sex" , "=" , sysUser.getSex());
+            }
+            if (Lang.isNotEmpty(sysUser.getAvatar())){
+                cnd.and("avatar" , "=" , sysUser.getAvatar());
+            }
+            if (Lang.isNotEmpty(sysUser.getPassword())){
+                cnd.and("password" , "=" , sysUser.getPassword());
+            }
+            if (Lang.isNotEmpty(sysUser.getStatus())){
+                cnd.and("status" , "=" , sysUser.getStatus());
+            }
+            if (Lang.isNotEmpty(sysUser.getLoginIp())){
+                cnd.and("login_ip" , "=" , sysUser.getLoginIp());
+            }
+            if (Lang.isNotEmpty(sysUser.getLoginDate())){
+                cnd.and("login_date" , "=" , sysUser.getLoginDate());
+            }
+            if (Lang.isNotEmpty(sysUser.getSalt())){
+                cnd.and("salt" , "=" , sysUser.getSalt());
+            }
+        }
+        return cnd;
+    }
+
+    @Override
+    public List<SysUser> query(SysUser sysUser) {
+        return this.query(queryWrapper(sysUser));
+    }
+
+    @Override
+    public TableData<SysUser> query(SysUser sysUser, int pageNumber, int pageSize) {
+        return this.queryTable(queryWrapper(sysUser), pageNumber, pageSize);
+    }
 
     /**
      * 根据条件分页查询用户列表
@@ -167,7 +212,9 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements ISys
      */
     @Override
     public SysUser selectUserById(Long userId) {
-        return this.fetch(userId);
+        SysUser user =  fetch(userId);
+        fetchLinks(user,"dept|roles");
+        return user;
     }
 
     /**
@@ -178,7 +225,20 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements ISys
      */
     @Override
     public String selectUserRoleGroup(String userName) {
-        List<SysRole> list = roleMapper.selectRolesByUserName(userName);
+        String sqlstr = "select distinct r.role_id, r.role_name, r.role_key, r.role_sort, r.data_scope," +
+                " r.menu_check_strictly, r.dept_check_strictly, r.status, r.del_flag, r.create_time, r.remark  " +
+                "  from sys_role r " +
+                " left join sys_user_role ur on ur.role_id = r.role_id " +
+                " left join sys_user u on u.user_id = ur.user_id " +
+                " left join sys_dept d on u.dept_id = d.dept_id " +
+                " WHERE r.del_flag = '0' and u.user_name = @userName ";
+        Sql sql = Sqls.create(sqlstr);
+        sql.params().set("userName" , userName);
+        sql.setCallback(Sqls.callback.entities());
+        Entity<SysRole> entity = dao().getEntity(SysRole.class);
+        sql.setEntity(entity);
+        dao().execute(sql);
+        List<SysRole> list = sql.getList(SysRole.class);
         if (CollectionUtils.isEmpty(list)) {
             return StringUtils.EMPTY;
         }
@@ -193,7 +253,19 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements ISys
      */
     @Override
     public String selectUserPostGroup(String userName) {
-        List<SysPost> list = postMapper.selectPostsByUserName(userName);
+        String sqlstr = " select p.post_id, p.post_name, p.post_code " +
+                " from sys_post p " +
+                " left join sys_user_post up on up.post_id = p.post_id " +
+                " left join sys_user u on u.user_id = up.user_id " +
+                " where u.user_name = @userName ";
+        Sql sql = Sqls.create(sqlstr);
+        sql.params().set("userName" , userName);
+        sql.setCallback(Sqls.callback.entities());
+        Entity<SysPost> entity = dao().getEntity(SysPost.class);
+        sql.setEntity(entity);
+        dao().execute(sql);
+        
+        List<SysPost> list = sql.getList(SysPost.class);
         if (CollectionUtils.isEmpty(list)) {
             return StringUtils.EMPTY;
         }
@@ -316,11 +388,12 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements ISys
     public int updateUser(SysUser user) {
         Long userId = user.getUserId();
         // 删除用户与角色关联
-        userRoleMapper.deleteUserRoleByUserId(userId);
+        userRoleService.delete(Cnd.where("user_id","=",userId));
         // 新增用户与角色管理
         insertUserRole(user);
         // 删除用户与岗位关联
-        userPostMapper.deleteUserPostByUserId(userId);
+        userPostService.delete(Cnd.where("user_id","=",userId));
+
         // 新增用户与岗位管理
         insertUserPost(user);
         return this.update(user);
@@ -335,7 +408,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements ISys
     @Override
     @Transactional
     public void insertUserAuth(Long userId, Long[] roleIds) {
-        userRoleMapper.deleteUserRoleByUserId(userId);
+        userRoleService.delete(Cnd.where("user_id","=",userId));
         insertUserRole(userId, roleIds);
     }
 
@@ -413,7 +486,9 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements ISys
                 list.add(ur);
             }
             if (list.size() > 0) {
-                userRoleMapper.batchUserRole(list);
+                for(SysUserRole role:list){
+                    userRoleService.insert(role);
+                }
             }
         }
     }
@@ -435,7 +510,9 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements ISys
                 list.add(up);
             }
             if (list.size() > 0) {
-                userPostMapper.batchUserPost(list);
+                for(SysUserPost post:list){
+                    userPostService.insert(post);
+                }
             }
         }
     }
@@ -457,7 +534,9 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements ISys
                 list.add(ur);
             }
             if (list.size() > 0) {
-                userRoleMapper.batchUserRole(list);
+                for(SysUserRole role:list){
+                    userRoleService.insert(role);
+                }
             }
         }
     }
@@ -472,9 +551,9 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements ISys
     @Transactional
     public int deleteUserById(Long userId) {
         // 删除用户与角色关联
-        userRoleMapper.deleteUserRoleByUserId(userId);
+        userRoleService.delete(Cnd.where("user_id","=",userId));
         // 删除用户与岗位表
-        userPostMapper.deleteUserPostByUserId(userId);
+        userPostService.delete(Cnd.where("user_id","=",userId));
         return this.delete(userId);
     }
 
@@ -493,9 +572,9 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements ISys
                 checkUserDataScope(userId);
             }
             // 删除用户与角色关联
-            userRoleMapper.deleteUserRole(userIds);
+            userRoleService.delete(Cnd.where("user_id","in",userIds));
             // 删除用户与岗位关联
-            userPostMapper.deleteUserPost(userIds);
+            userPostService.delete(Cnd.where("user_id","in",userIds));
             this.delete(userIds);
         }catch (Exception e){
             return 0;

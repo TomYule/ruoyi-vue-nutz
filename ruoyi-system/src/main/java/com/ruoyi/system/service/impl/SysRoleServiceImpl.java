@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.ruoyi.common.core.page.TableData;
 import com.ruoyi.common.core.service.BaseServiceImpl;
 import com.ruoyi.system.service.ISysRoleDeptService;
 import com.ruoyi.system.service.ISysRoleMenuService;
@@ -38,11 +39,10 @@ import com.ruoyi.system.service.ISysRoleService;
  * @author ruoyi
  */
 @Service
-public class SysRoleServiceImpl  extends BaseServiceImpl<SysRole> implements ISysRoleService {
+public class SysRoleServiceImpl extends BaseServiceImpl<SysRole> implements ISysRoleService {
+
     @Autowired
     private ISysUserRoleService sysUserRoleService;
-    @Autowired
-    private ISysRoleService roleService;
     @Autowired
     private ISysRoleMenuService sysRoleMenuService;
     @Autowired
@@ -50,18 +50,18 @@ public class SysRoleServiceImpl  extends BaseServiceImpl<SysRole> implements ISy
 
     public Cnd queryWrapper(SysRole sysRole) {
         Cnd cnd = Cnd.NEW();
-        if (Lang.isNotEmpty(sysRole)){
-            if (Lang.isNotEmpty(sysRole.getRoleName())){
-                cnd.and("role_name" , "like" , "%" + sysRole.getRoleName() + "%");
+        if (Lang.isNotEmpty(sysRole)) {
+            if (Lang.isNotEmpty(sysRole.getRoleName())) {
+                cnd.and("role_name", "like", "%" + sysRole.getRoleName() + "%");
             }
-            if (Lang.isNotEmpty(sysRole.getRoleKey())){
-                cnd.and("role_key" , "=" , sysRole.getRoleKey());
+            if (Lang.isNotEmpty(sysRole.getRoleKey())) {
+                cnd.and("role_key", "=", sysRole.getRoleKey());
             }
-            if (Lang.isNotEmpty(sysRole.getRoleSort())){
-                cnd.and("role_sort" , "=" , sysRole.getRoleSort());
+            if (Lang.isNotEmpty(sysRole.getRoleSort())) {
+                cnd.and("role_sort", "=", sysRole.getRoleSort());
             }
-            if (Lang.isNotEmpty(sysRole.getDataScope())){
-                cnd.and("data_scope" , "=" , sysRole.getDataScope());
+            if (Lang.isNotEmpty(sysRole.getDataScope())) {
+                cnd.and("data_scope", "=", sysRole.getDataScope());
             }
 //            if (Lang.isNotEmpty(sysRole.getMenuCheckStrictly())){
 //                cnd.and("menu_check_strictly" , "=" , sysRole.getMenuCheckStrictly());
@@ -69,8 +69,8 @@ public class SysRoleServiceImpl  extends BaseServiceImpl<SysRole> implements ISy
 //            if (Lang.isNotEmpty(sysRole.getDeptCheckStrictly())){
 //                cnd.and("dept_check_strictly" , "=" , sysRole.getDeptCheckStrictly());
 //            }
-            if (Lang.isNotEmpty(sysRole.getStatus())){
-                cnd.and("status" , "=" , sysRole.getStatus());
+            if (Lang.isNotEmpty(sysRole.getStatus())) {
+                cnd.and("status", "=", sysRole.getStatus());
             }
         }
         return cnd;
@@ -82,8 +82,8 @@ public class SysRoleServiceImpl  extends BaseServiceImpl<SysRole> implements ISy
     }
 
     @Override
-    public List<SysRole> query(SysRole sysRole, int pageNumber, int pageSize) {
-        return this.query(queryWrapper(sysRole), pageNumber, pageSize);
+    public TableData<SysRole> query(SysRole sysRole, int pageNumber, int pageSize) {
+        return this.queryTable(queryWrapper(sysRole), pageNumber, pageSize);
     }
 
     /**
@@ -114,7 +114,7 @@ public class SysRoleServiceImpl  extends BaseServiceImpl<SysRole> implements ISy
                 " left join sys_dept d on u.dept_id = d.dept_id " +
                 " WHERE r.del_flag = '0' and ur.user_id = @userId";
         Sql sql = Sqls.create(sqlstr);
-        sql.params().set("userId" , userId);
+        sql.params().set("userId", userId);
         sql.setCallback(Sqls.callback.entities());
         Entity<SysRole> entity = dao().getEntity(SysRole.class);
         sql.setEntity(entity);
@@ -141,14 +141,14 @@ public class SysRoleServiceImpl  extends BaseServiceImpl<SysRole> implements ISy
      */
     @Override
     public Set<String> selectRolePermissionByUserId(Long userId) {
-        String sqlstr =  " select distinct r.role_id, r.role_name, r.role_key, r.role_sort, r.data_scope," +
-                " r.menu_check_strictly, r.dept_check_strictly, r.status, r.del_flag, r.create_time, r.remark  "  +
-                " from sys_role r "  +
-                 " left join sys_user_role ur on ur.role_id = r.role_id "  +
-                 " left join sys_user u on u.user_id = ur.user_id "  +
-                 " WHERE r.del_flag = '0' and ur.user_id = @userId";
+        String sqlstr = " select distinct r.role_id, r.role_name, r.role_key, r.role_sort, r.data_scope," +
+                " r.menu_check_strictly, r.dept_check_strictly, r.status, r.del_flag, r.create_time, r.remark  " +
+                " from sys_role r " +
+                " left join sys_user_role ur on ur.role_id = r.role_id " +
+                " left join sys_user u on u.user_id = ur.user_id " +
+                " WHERE r.del_flag = '0' and ur.user_id = @userId";
         Sql sql = Sqls.create(sqlstr);
-        sql.params().set("userId" , userId);
+        sql.params().set("userId", userId);
         sql.setCallback(Sqls.callback.entities());
         Entity<SysRole> entity = dao().getEntity(SysRole.class);
         sql.setEntity(entity);
@@ -181,16 +181,14 @@ public class SysRoleServiceImpl  extends BaseServiceImpl<SysRole> implements ISy
      */
     @Override
     public List<Long> selectRoleListByUserId(Long userId) {
-        String sqlstr =   " select r.role_id "  +
-                " from sys_role r "  +
-                 " left join sys_user_role ur on ur.role_id = r.role_id "  +
-                 " left join sys_user u on u.user_id = ur.user_id "  +
-                 " where u.user_id = @userId";
-        Sql sql = Sqls.create(sqlstr);
-        sql.params().set("userId" , userId);
-        sql.setCallback(Sqls.callback.entities());
-        Entity<Long> entity = dao().getEntity(Long.class);
-        sql.setEntity(entity);
+        String sqlstr = " select r.role_id " +
+                " from sys_role r " +
+                " left join sys_user_role ur on ur.role_id = r.role_id " +
+                " left join sys_user u on u.user_id = ur.user_id " +
+                " where u.user_id = @userId";
+        Sql sql = Sqls.fetchLong(sqlstr);
+        sql.params().set("userId", userId);
+        sql.setCallback(Sqls.callback.longs());;
         dao().execute(sql);
         return sql.getList(Long.class);
     }
@@ -215,7 +213,7 @@ public class SysRoleServiceImpl  extends BaseServiceImpl<SysRole> implements ISy
     @Override
     public String checkRoleNameUnique(SysRole role) {
         Long roleId = StringUtils.isNull(role.getRoleId()) ? -1L : role.getRoleId();
-        SysRole info =roleService.fetch(role.getRoleName());
+        SysRole info = fetch(role.getRoleName());
         if (StringUtils.isNotNull(info) && info.getRoleId().longValue() != roleId.longValue()) {
             return UserConstants.NOT_UNIQUE;
         }
@@ -231,7 +229,7 @@ public class SysRoleServiceImpl  extends BaseServiceImpl<SysRole> implements ISy
     @Override
     public String checkRoleKeyUnique(SysRole role) {
         Long roleId = StringUtils.isNull(role.getRoleId()) ? -1L : role.getRoleId();
-        SysRole info = this.fetch(Cnd.where("role_key","=",role.getRoleKey()));
+        SysRole info = this.fetch(Cnd.where("role_key", "=", role.getRoleKey()));
         if (StringUtils.isNotNull(info) && info.getRoleId().longValue() != roleId.longValue()) {
             return UserConstants.NOT_UNIQUE;
         }
@@ -275,7 +273,7 @@ public class SysRoleServiceImpl  extends BaseServiceImpl<SysRole> implements ISy
      */
     @Override
     public int countUserRoleByRoleId(Long roleId) {
-        return sysUserRoleService.count(Cnd.where("role_id","=",roleId));
+        return sysUserRoleService.count(Cnd.where("role_id", "=", roleId));
     }
 
     /**
@@ -288,7 +286,7 @@ public class SysRoleServiceImpl  extends BaseServiceImpl<SysRole> implements ISy
     @Transactional
     public int insertRole(SysRole role) {
         // 新增角色信息
-        roleService.insertRole(role);
+        insert(role);
         return insertRoleMenu(role);
     }
 
@@ -302,9 +300,9 @@ public class SysRoleServiceImpl  extends BaseServiceImpl<SysRole> implements ISy
     @Transactional
     public int updateRole(SysRole role) {
         // 修改角色信息
-        roleService.updateRole(role);
+        update(role);
         // 删除角色与菜单关联
-        sysRoleMenuService.delete(Cnd.where("role_id","=",role.getRoleId()));
+        sysRoleMenuService.delete(Cnd.where("role_id", "=", role.getRoleId()));
         return insertRoleMenu(role);
     }
 
@@ -316,7 +314,7 @@ public class SysRoleServiceImpl  extends BaseServiceImpl<SysRole> implements ISy
      */
     @Override
     public int updateRoleStatus(SysRole role) {
-        return roleService.updateRole(role);
+        return updateRole(role);
     }
 
     /**
@@ -329,9 +327,9 @@ public class SysRoleServiceImpl  extends BaseServiceImpl<SysRole> implements ISy
     @Transactional
     public int authDataScope(SysRole role) {
         // 修改角色信息
-        roleService.updateRole(role);
+        updateRole(role);
         // 删除角色与部门关联
-        sysRoleMenuService.delete(Cnd.where("role_id","=",role.getRoleId()));
+        sysRoleMenuService.delete(Cnd.where("role_id", "=", role.getRoleId()));
         // 新增角色和部门信息（数据权限）
         return insertRoleDept(role);
     }
@@ -394,10 +392,10 @@ public class SysRoleServiceImpl  extends BaseServiceImpl<SysRole> implements ISy
     @Transactional
     public int deleteRoleById(Long roleId) {
         // 删除角色与菜单关联
-        sysRoleMenuService.delete(Cnd.where("role_id","=",roleId));
+        sysRoleMenuService.delete(Cnd.where("role_id", "=", roleId));
         // 删除角色与部门关联
-        sysRoleDeptService.delete(Cnd.where("role_id","=",roleId));
-        return roleService.deleteRoleById(roleId);
+        sysRoleDeptService.delete(Cnd.where("role_id", "=", roleId));
+        return delete(roleId);
     }
 
     /**
@@ -414,14 +412,14 @@ public class SysRoleServiceImpl  extends BaseServiceImpl<SysRole> implements ISy
             checkRoleDataScope(roleId);
             SysRole role = selectRoleById(roleId);
             if (countUserRoleByRoleId(roleId) > 0) {
-                throw new ServiceException(String.format("%1$s已分配,不能删除" , role.getRoleName()));
+                throw new ServiceException(String.format("%1$s已分配,不能删除", role.getRoleName()));
             }
         }
         // 删除角色与菜单关联
-        sysRoleMenuService.delete(Cnd.where("role_id","in",roleIds));
+        sysRoleMenuService.delete(Cnd.where("role_id", "in", roleIds));
         // 删除角色与部门关联
-        sysRoleDeptService.delete(Cnd.where("role_id","in",roleIds));
-        return roleService.deleteRoleByIds(roleIds);
+        sysRoleDeptService.delete(Cnd.where("role_id", "in", roleIds));
+        return delete(roleIds);
     }
 
     /**
@@ -432,8 +430,8 @@ public class SysRoleServiceImpl  extends BaseServiceImpl<SysRole> implements ISy
      */
     @Override
     public int deleteAuthUser(SysUserRole userRole) {
-        return sysUserRoleService.delete(Cnd.where("user_id","=",userRole.getUserId())
-                .and("role_id","=",userRole.getRoleId()));
+        return sysUserRoleService.delete(Cnd.where("user_id", "=", userRole.getUserId())
+                .and("role_id", "=", userRole.getRoleId()));
     }
 
     /**
@@ -445,8 +443,8 @@ public class SysRoleServiceImpl  extends BaseServiceImpl<SysRole> implements ISy
      */
     @Override
     public int deleteAuthUsers(Long roleId, Long[] userIds) {
-        return sysUserRoleService.delete(Cnd.where("user_id","in",userIds)
-                .and("role_id","in",roleId));
+        return sysUserRoleService.delete(Cnd.where("user_id", "in", userIds)
+                .and("role_id", "in", roleId));
     }
 
     /**
@@ -466,8 +464,8 @@ public class SysRoleServiceImpl  extends BaseServiceImpl<SysRole> implements ISy
             ur.setRoleId(roleId);
             list.add(ur);
         }
-        int row =0;
-        for(SysUserRole userRole:list){
+        int row = 0;
+        for (SysUserRole userRole : list) {
             sysUserRoleService.insert(userRole);
             row++;
         }

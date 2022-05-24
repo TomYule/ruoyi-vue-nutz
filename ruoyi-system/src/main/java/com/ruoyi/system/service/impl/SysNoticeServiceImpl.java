@@ -2,13 +2,12 @@ package com.ruoyi.system.service.impl;
 
 import java.util.List;
 
+import com.ruoyi.common.core.page.TableData;
 import com.ruoyi.common.core.service.BaseServiceImpl;
 import org.nutz.dao.Cnd;
 import org.nutz.lang.Lang;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.system.domain.SysNotice;
-import com.ruoyi.system.mapper.SysNoticeMapper;
 import com.ruoyi.system.service.ISysNoticeService;
 
 /**
@@ -43,8 +42,8 @@ public class SysNoticeServiceImpl extends BaseServiceImpl<SysNotice> implements 
     }
 
     @Override
-    public List<SysNotice> query(SysNotice sysNotice, int pageNumber, int pageSize) {
-        return this.query(queryWrapper(sysNotice), pageNumber, pageSize);
+    public TableData<SysNotice> query(SysNotice sysNotice, int pageNumber, int pageSize) {
+        return this.queryTable(queryWrapper(sysNotice), pageNumber, pageSize);
     }
 
     /**

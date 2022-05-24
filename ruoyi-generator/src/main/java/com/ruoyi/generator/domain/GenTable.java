@@ -72,6 +72,7 @@ public class GenTable extends BaseModel {
      */
     @Column("tpl_category")
     @Comment("使用的模板（crud单表操作 tree树表操作）")
+    @Default("crud")
     private String tplCategory;
 
     /**
@@ -119,6 +120,7 @@ public class GenTable extends BaseModel {
      */
     @Column("gen_type")
     @Comment("生成代码方式（0zip压缩包 1自定义路径）")
+    @Default("0")
     private String genType;
 
     /**
@@ -126,6 +128,7 @@ public class GenTable extends BaseModel {
      */
     @Column("gen_path")
     @Comment("生成路径（不填默认项目路径）")
+    @Default("/")
     private String genPath;
 
     /**

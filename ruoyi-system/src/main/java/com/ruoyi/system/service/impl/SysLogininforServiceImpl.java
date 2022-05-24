@@ -2,13 +2,12 @@ package com.ruoyi.system.service.impl;
 
 import java.util.List;
 
+import com.ruoyi.common.core.page.TableData;
 import com.ruoyi.common.core.service.BaseServiceImpl;
 import org.nutz.dao.Cnd;
 import org.nutz.lang.Lang;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.system.domain.SysLogininfor;
-import com.ruoyi.system.mapper.SysLogininforMapper;
 import com.ruoyi.system.service.ISysLogininforService;
 
 /**
@@ -55,8 +54,8 @@ public class SysLogininforServiceImpl extends BaseServiceImpl<SysLogininfor> imp
     }
 
     @Override
-    public List<SysLogininfor> query(SysLogininfor sysLogininfor, int pageNumber, int pageSize) {
-        return this.query(queryWrapper(sysLogininfor), pageNumber, pageSize);
+    public TableData<SysLogininfor> query(SysLogininfor sysLogininfor, int pageNumber, int pageSize) {
+        return this.queryTable(queryWrapper(sysLogininfor), pageNumber, pageSize);
     }
 
 

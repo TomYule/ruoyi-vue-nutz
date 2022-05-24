@@ -2,7 +2,10 @@ package com.ruoyi.web.controller.system;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.common.core.page.TableData;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -37,11 +40,11 @@ public class SysDictTypeController extends BaseController
 
     @PreAuthorize("@ss.hasPermi('system:dict:list')")
     @GetMapping("/list")
-    public TableDataInfo list(SysDictType dictType)
-    {
-        startPage();
-        List<SysDictType> list = dictTypeService.selectDictTypeList(dictType);
-        return getDataTable(list);
+    public TableData list(@Param("pageNum")Integer pageNum,
+                          @Param("pageSize")Integer pageSize,
+                          SysDictType sysDictType) {
+        TableData<SysDictType> data = dictTypeService.query(sysDictType,pageNum,pageSize);
+        return data;
     }
 
     @Log(title = "字典类型", businessType = BusinessType.EXPORT)

@@ -1,6 +1,5 @@
 package com.ruoyi.common.core.domain.entity;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import javax.validation.constraints.*;
@@ -15,7 +14,6 @@ import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.annotation.Excel.ColumnType;
 import com.ruoyi.common.annotation.Excel.Type;
 import com.ruoyi.common.annotation.Excels;
-import com.ruoyi.common.core.domain.BaseEntity;
 import com.ruoyi.common.xss.Xss;
 import org.nutz.dao.entity.annotation.*;
 
@@ -27,7 +25,6 @@ import org.nutz.dao.entity.annotation.*;
 @ApiModel(description = "用户信息表 entity.\n@author haiming")
 @Table("sys_user")
 public class SysUser extends BaseModel {
-    private static final long serialVersionUID = 1L;
 
     /** 用户ID */
     @Id
@@ -117,9 +114,11 @@ public class SysUser extends BaseModel {
         @Excel(name = "部门名称", targetAttr = "deptName", type = Type.EXPORT),
         @Excel(name = "部门负责人", targetAttr = "leader", type = Type.EXPORT)
     })
+    @One(field = "deptId")
     private SysDept dept;
 
     /** 角色对象 */
+    @ManyMany(from = "user_id", relation = "sys_user_role", to = "role_id")
     private List<SysRole> roles;
 
     /** 角色组 */

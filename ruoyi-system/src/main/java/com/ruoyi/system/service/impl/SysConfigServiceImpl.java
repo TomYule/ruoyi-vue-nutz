@@ -3,6 +3,7 @@ package com.ruoyi.system.service.impl;
 import com.ruoyi.common.annotation.DataSource;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.constant.UserConstants;
+import com.ruoyi.common.core.page.TableData;
 import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.common.core.service.BaseServiceImpl;
 import com.ruoyi.common.core.text.Convert;
@@ -27,6 +28,10 @@ import java.util.List;
  */
 @Service
 public class SysConfigServiceImpl extends BaseServiceImpl<SysConfig> implements ISysConfigService {
+
+    @Autowired
+    private RedisCache redisCache;
+
     public Cnd queryWrapper(SysConfig sysConfig) {
         Cnd cnd = Cnd.NEW();
         if (Lang.isNotEmpty(sysConfig)) {
@@ -52,12 +57,9 @@ public class SysConfigServiceImpl extends BaseServiceImpl<SysConfig> implements 
     }
 
     @Override
-    public List<SysConfig> query(SysConfig sysConfig, int pageNumber, int pageSize) {
-        return this.query(queryWrapper(sysConfig), pageNumber, pageSize);
+    public TableData<SysConfig> query(SysConfig sysConfig, int pageNumber, int pageSize) {
+        return this.queryTable(queryWrapper(sysConfig), pageNumber, pageSize);
     }
-
-    @Autowired
-    private RedisCache redisCache;
 
     /**
      * 项目启动时，初始化参数到缓存

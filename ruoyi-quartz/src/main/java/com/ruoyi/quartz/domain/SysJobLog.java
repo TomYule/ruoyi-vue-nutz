@@ -1,47 +1,67 @@
 package com.ruoyi.quartz.domain;
 
+import java.io.Serializable;
 import java.util.Date;
+
+import com.ruoyi.common.core.domain.BaseModel;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
+import org.nutz.dao.entity.annotation.*;
 
 /**
  * 定时任务调度日志表 sys_job_log
  * 
  * @author ruoyi
  */
-public class SysJobLog extends BaseEntity
-{
+@Table("sys_job_log")
+public class SysJobLog implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    /** ID */
-    @Excel(name = "日志序号")
+    /** 任务日志ID */
+    @Id
+    @ColDefine(type = ColType.INT, width = 32)
+    @Column("job_log_id")
+    @Comment("任务日志ID")
     private Long jobLogId;
 
     /** 任务名称 */
+    @Column("job_name")
+    @Comment("任务名称")
     @Excel(name = "任务名称")
     private String jobName;
 
     /** 任务组名 */
+    @Column("job_group")
+    @Comment("任务组名")
     @Excel(name = "任务组名")
     private String jobGroup;
 
     /** 调用目标字符串 */
+    @Column("invoke_target")
+    @Comment("调用目标字符串")
     @Excel(name = "调用目标字符串")
     private String invokeTarget;
 
     /** 日志信息 */
+    @Column("job_message")
+    @Comment("日志信息")
     @Excel(name = "日志信息")
     private String jobMessage;
 
     /** 执行状态（0正常 1失败） */
+    @Column("status")
+    @Comment("执行状态（0正常 1失败）")
     @Excel(name = "执行状态", readConverterExp = "0=正常,1=失败")
     private String status;
 
     /** 异常信息 */
+    @Column("exception_info")
+    @Comment("异常信息")
     @Excel(name = "异常信息")
     private String exceptionInfo;
+
 
     /** 开始时间 */
     private Date startTime;

@@ -5,8 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.ruoyi.common.core.page.TableData;
 import com.ruoyi.common.core.service.BaseServiceImpl;
-import com.ruoyi.system.domain.SysMenu;
 import com.ruoyi.system.service.ISysRoleService;
 import com.ruoyi.system.service.ISysUserService;
 import org.nutz.dao.Chain;
@@ -15,7 +15,6 @@ import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.sql.Sql;
 import org.nutz.lang.Lang;
-import org.nutz.lang.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.common.annotation.DataScope;
@@ -29,8 +28,6 @@ import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.spring.SpringUtils;
-import com.ruoyi.system.mapper.SysDeptMapper;
-import com.ruoyi.system.mapper.SysRoleMapper;
 import com.ruoyi.system.service.ISysDeptService;
 
 /**
@@ -82,8 +79,8 @@ public class SysDeptServiceImpl extends BaseServiceImpl<SysDept> implements ISys
     }
 
     @Override
-    public List<SysDept> query(SysDept sysDept, int pageNumber, int pageSize) {
-        return this.query(queryWrapper(sysDept), pageNumber, pageSize);
+    public TableData<SysDept> query(SysDept sysDept, int pageNumber, int pageSize) {
+        return this.queryTable(queryWrapper(sysDept), pageNumber, pageSize);
     }
 
     /**
@@ -154,11 +151,9 @@ public class SysDeptServiceImpl extends BaseServiceImpl<SysDept> implements ISys
             sqlstr += " and d.dept_id not in (select d.parent_id from sys_dept d inner join sys_role_dept rd on d.dept_id = rd.dept_id and rd.role_id = @roleId ) ";
         }
         sqlstr += " order by d.parent_id, d.order_num";
-        Sql sql = Sqls.create(sqlstr);
+        Sql sql = Sqls.fetchLong(sqlstr);
         sql.params().set("roleId" , roleId);
-        sql.setCallback(Sqls.callback.entities());
-        Entity<Long> entity = dao().getEntity(Long.class);
-        sql.setEntity(entity);
+        sql.setCallback(Sqls.callback.longs());
         dao().execute(sql);
         return sql.getList(Long.class);
     }

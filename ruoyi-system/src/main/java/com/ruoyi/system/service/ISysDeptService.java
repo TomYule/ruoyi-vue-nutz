@@ -3,6 +3,7 @@ package com.ruoyi.system.service;
 import java.util.List;
 import com.ruoyi.common.core.domain.TreeSelect;
 import com.ruoyi.common.core.domain.entity.SysDept;
+import com.ruoyi.common.core.page.TableData;
 import com.ruoyi.common.core.service.BaseService;
 
 /**
@@ -13,7 +14,7 @@ import com.ruoyi.common.core.service.BaseService;
 public interface ISysDeptService extends BaseService<SysDept> {
     List<SysDept> query(SysDept sysDept);
 
-    List<SysDept> query(SysDept sysDept,int pageNumber, int pageSize);
+    TableData<SysDept> query(SysDept sysDept, int pageNumber, int pageSize);
     /**
      * 查询部门管理数据
      * 

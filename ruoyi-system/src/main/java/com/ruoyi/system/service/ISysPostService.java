@@ -2,6 +2,7 @@ package com.ruoyi.system.service;
 
 import java.util.List;
 
+import com.ruoyi.common.core.page.TableData;
 import com.ruoyi.common.core.service.BaseService;
 import com.ruoyi.system.domain.SysPost;
 
@@ -15,7 +16,8 @@ public interface ISysPostService extends BaseService<SysPost> {
 
     List<SysPost> query(SysPost post);
 
-    List<SysPost> query(SysPost post,int pageNumber, int pageSize);
+    TableData<SysPost> query(SysPost sysPost, int pageNumber, int pageSize);
+
     /**
      * 校验岗位名称
      *

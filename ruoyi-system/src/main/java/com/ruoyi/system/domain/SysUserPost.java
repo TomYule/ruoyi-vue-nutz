@@ -2,9 +2,9 @@ package com.ruoyi.system.domain;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import com.ruoyi.common.annotation.Excel;
 import org.nutz.dao.entity.annotation.*;
-import com.ruoyi.common.core.domain.BaseModel;
+
+import java.io.Serializable;
 
 /**
  * 用户与岗位关联对象 sys_user_post
@@ -13,14 +13,12 @@ import com.ruoyi.common.core.domain.BaseModel;
  * @date 2022-05-23
  */
 @Table("sys_user_post")
-public class SysUserPost extends BaseModel {
+public class SysUserPost implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
      * 用户ID
      */
-    @Id
-    @ColDefine(type = ColType.INT, width = 32)
     @Column("user_id")
     @Comment("用户ID")
     private Long userId;

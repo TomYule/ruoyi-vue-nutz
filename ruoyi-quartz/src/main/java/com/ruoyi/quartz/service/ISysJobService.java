@@ -1,6 +1,9 @@
 package com.ruoyi.quartz.service;
 
 import java.util.List;
+
+import com.ruoyi.common.core.page.TableData;
+import com.ruoyi.common.core.service.BaseService;
 import org.quartz.SchedulerException;
 import com.ruoyi.common.exception.job.TaskException;
 import com.ruoyi.quartz.domain.SysJob;
@@ -10,8 +13,10 @@ import com.ruoyi.quartz.domain.SysJob;
  * 
  * @author ruoyi
  */
-public interface ISysJobService
-{
+public interface ISysJobService extends BaseService<SysJob> {
+    List<SysJob> query(SysJob sysJob);
+
+    TableData<SysJob> query(SysJob sysJob, int pageNumber, int pageSize);
     /**
      * 获取quartz调度器的计划任务
      * 

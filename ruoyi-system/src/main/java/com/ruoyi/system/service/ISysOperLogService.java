@@ -2,6 +2,7 @@ package com.ruoyi.system.service;
 
 import java.util.List;
 
+import com.ruoyi.common.core.page.TableData;
 import com.ruoyi.common.core.service.BaseService;
 import com.ruoyi.system.domain.SysOperLog;
 
@@ -13,7 +14,7 @@ import com.ruoyi.system.domain.SysOperLog;
 public interface ISysOperLogService extends BaseService<SysOperLog> {
     List<SysOperLog> query(SysOperLog sysOperLog);
 
-    List<SysOperLog> query(SysOperLog sysOperLog,int pageNumber, int pageSize);
+    TableData<SysOperLog> query(SysOperLog sysOperLog, int pageNumber, int pageSize);
     /**
      * 新增操作日志
      * 

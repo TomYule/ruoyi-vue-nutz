@@ -3,11 +3,10 @@ package com.ruoyi.web.controller.system;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
-import org.nutz.dao.Cnd;
-import org.nutz.lang.Lang;
-import org.nutz.lang.Strings;
-import org.nutz.mvc.annotation.Param;
+import com.ruoyi.common.core.page.TableData;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,7 +21,6 @@ import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
-import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.system.domain.SysPost;
@@ -44,14 +42,14 @@ public class SysPostController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('system:post:list')")
     @GetMapping("/list")
-    public TableDataInfo list(@Param("pageNum")Integer pageNum,
-                              @Param("pageSize")Integer pageSize,
-                              SysPost post) {
-        List<SysPost> list = postService.query(post,pageNum,pageSize);
-        return getDataTable(list);
+    public TableData list(@Param("pageNum") Integer pageNum,
+                          @Param("pageSize") Integer pageSize,
+                          SysPost sysPost) {
+        TableData<SysPost> data = postService.query(sysPost, pageNum, pageSize);
+        return data;
     }
 
-    @Log(title = "岗位管理" , businessType = BusinessType.EXPORT)
+    @Log(title = "岗位管理", businessType = BusinessType.EXPORT)
     @PreAuthorize("@ss.hasPermi('system:post:export')")
     @PostMapping("/export")
     public void export(HttpServletResponse response, SysPost post) {
@@ -73,7 +71,7 @@ public class SysPostController extends BaseController {
      * 新增岗位
      */
     @PreAuthorize("@ss.hasPermi('system:post:add')")
-    @Log(title = "岗位管理" , businessType = BusinessType.INSERT)
+    @Log(title = "岗位管理", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@Validated @RequestBody SysPost post) {
         if (UserConstants.NOT_UNIQUE.equals(postService.checkPostNameUnique(post))) {
@@ -95,7 +93,7 @@ public class SysPostController extends BaseController {
      * 修改岗位
      */
     @PreAuthorize("@ss.hasPermi('system:post:edit')")
-    @Log(title = "岗位管理" , businessType = BusinessType.UPDATE)
+    @Log(title = "岗位管理", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@Validated @RequestBody SysPost post) {
         if (UserConstants.NOT_UNIQUE.equals(postService.checkPostNameUnique(post))) {
@@ -111,7 +109,7 @@ public class SysPostController extends BaseController {
      * 删除岗位
      */
     @PreAuthorize("@ss.hasPermi('system:post:remove')")
-    @Log(title = "岗位管理" , businessType = BusinessType.DELETE)
+    @Log(title = "岗位管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{postIds}")
     public AjaxResult remove(@PathVariable Long[] postIds) {
         try {

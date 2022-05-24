@@ -2,6 +2,7 @@ package com.ruoyi.system.service;
 
 import java.util.List;
 
+import com.ruoyi.common.core.page.TableData;
 import com.ruoyi.common.core.service.BaseService;
 import com.ruoyi.system.domain.SysConfig;
 
@@ -13,7 +14,8 @@ import com.ruoyi.system.domain.SysConfig;
 public interface ISysConfigService  extends BaseService<SysConfig> {
     List<SysConfig> query(SysConfig sysConfig);
 
-    List<SysConfig> query(SysConfig sysConfig,int pageNumber, int pageSize);
+    TableData<SysConfig> query(SysConfig sysConfig, int pageNumber, int pageSize);
+
     /**
      * 查询参数配置信息
      * 

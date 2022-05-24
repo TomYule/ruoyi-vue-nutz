@@ -3,14 +3,18 @@ package com.ruoyi.system.service;
 import java.util.List;
 import com.ruoyi.common.core.domain.entity.SysDictData;
 import com.ruoyi.common.core.domain.entity.SysDictType;
+import com.ruoyi.common.core.page.TableData;
+import com.ruoyi.common.core.service.BaseService;
 
 /**
  * 字典 业务层
  * 
  * @author ruoyi
  */
-public interface ISysDictTypeService
-{
+public interface ISysDictTypeService extends BaseService<SysDictType> {
+    List<SysDictType> query(SysDictType sysDictType);
+
+    TableData<SysDictType> query(SysDictType sysDictType, int pageNumber, int pageSize);
     /**
      * 根据条件分页查询字典类型
      * 

@@ -20,8 +20,6 @@ public class SysUserRole implements Serializable {
     /**
      * 用户ID
      */
-    @Id
-    @ColDefine(type = ColType.INT, width = 32)
     @Column("user_id")
     @Comment("用户ID")
     private Long userId;

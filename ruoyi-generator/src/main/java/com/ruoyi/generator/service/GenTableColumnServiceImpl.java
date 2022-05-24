@@ -3,17 +3,14 @@ package com.ruoyi.generator.service;
 import java.util.List;
 
 import com.ruoyi.common.core.service.BaseServiceImpl;
-import com.ruoyi.generator.domain.GenTable;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.sql.Sql;
 import org.nutz.lang.Lang;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.common.core.text.Convert;
 import com.ruoyi.generator.domain.GenTableColumn;
-import com.ruoyi.generator.mapper.GenTableColumnMapper;
 
 /**
  * 业务字段 服务层实现
@@ -94,7 +91,7 @@ public class GenTableColumnServiceImpl extends BaseServiceImpl<GenTableColumn> i
 
 	@Override
 	public List<GenTableColumn> selectDbTableColumnsByName(String tableName) {
-		String sqlstr = " select column_name, (case when (is_nullable = 'no' <![CDATA[ && ]]> column_key != 'PRI') then '1' else null end) as is_required, " +
+		String sqlstr = " select column_name, (case when (is_nullable = 'no' && column_key != 'PRI') then '1' else null end) as is_required, " +
 				" (case when column_key = 'PRI' then '1' else '0' end) as is_pk, ordinal_position as sort, column_comment, " +
 				" (case when extra = 'auto_increment' then '1' else '0' end) as is_increment, column_type " +
 				" from information_schema.columns where table_schema = (select database()) and table_name = (@tableNames) " +

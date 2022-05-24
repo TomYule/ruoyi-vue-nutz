@@ -2,6 +2,7 @@ package com.ruoyi.system.service;
 
 import java.util.List;
 
+import com.ruoyi.common.core.page.TableData;
 import com.ruoyi.common.core.service.BaseService;
 import com.ruoyi.system.domain.SysNotice;
 
@@ -13,7 +14,7 @@ import com.ruoyi.system.domain.SysNotice;
 public interface ISysNoticeService extends BaseService<SysNotice> {
     List<SysNotice> query(SysNotice sysNotice);
 
-    List<SysNotice> query(SysNotice sysNotice,int pageNumber, int pageSize);
+    TableData<SysNotice> query(SysNotice sysNotice, int pageNumber, int pageSize);
     /**
      * 查询公告信息
      * 

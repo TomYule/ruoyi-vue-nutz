@@ -2,6 +2,7 @@ package com.ruoyi.system.service.impl;
 
 import java.util.List;
 
+import com.ruoyi.common.core.page.TableData;
 import com.ruoyi.common.core.service.BaseServiceImpl;
 import org.nutz.dao.Cnd;
 import org.nutz.lang.Lang;
@@ -74,8 +75,8 @@ public class SysOperLogServiceImpl extends BaseServiceImpl<SysOperLog> implement
     }
 
     @Override
-    public List<SysOperLog> query(SysOperLog sysOperLog, int pageNumber, int pageSize) {
-        return this.query(queryWrapper(sysOperLog), pageNumber, pageSize);
+    public TableData<SysOperLog> query(SysOperLog sysOperLog, int pageNumber, int pageSize) {
+        return this.queryTable(queryWrapper(sysOperLog), pageNumber, pageSize);
     }
 
 
