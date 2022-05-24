@@ -2,7 +2,6 @@ package com.ruoyi.generator.domain;
 
 import javax.validation.constraints.NotBlank;
 
-import com.ruoyi.common.core.domain.BaseEntity;
 import com.ruoyi.common.core.domain.BaseModel;
 import com.ruoyi.common.utils.StringUtils;
 import org.nutz.dao.entity.annotation.*;

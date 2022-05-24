@@ -1,6 +1,7 @@
 package com.ruoyi.framework.aspectj;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -89,6 +90,7 @@ public class LogAspect
             String className = joinPoint.getTarget().getClass().getName();
             String methodName = joinPoint.getSignature().getName();
             operLog.setMethod(className + "." + methodName + "()");
+            operLog.setOperTime(new Date());
             // 设置请求方式
             operLog.setRequestMethod(ServletUtils.getRequest().getMethod());
             // 处理设置注解上的参数

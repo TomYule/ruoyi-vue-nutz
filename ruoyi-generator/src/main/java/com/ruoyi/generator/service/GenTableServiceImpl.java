@@ -7,6 +7,7 @@ import java.io.StringWriter;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
@@ -14,19 +15,24 @@ import java.util.zip.ZipOutputStream;
 
 import com.ruoyi.common.core.page.TableData;
 import com.ruoyi.common.core.service.BaseServiceImpl;
+import com.ruoyi.generator.db.DbQueryRegistry;
+import com.ruoyi.generator.db.IDbQuery;
+import com.ruoyi.generator.db.converts.ITypeConvert;
+import com.ruoyi.generator.db.converts.TypeConvertRegistry;
+import com.ruoyi.generator.util.QueryUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.nutz.dao.Cnd;
+import org.nutz.dao.DB;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.util.Daos;
 import org.nutz.lang.Lang;
-import org.nutz.lang.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +64,7 @@ public class GenTableServiceImpl extends BaseServiceImpl<GenTable> implements IG
 
     @Autowired
     private IGenTableColumnService genTableColumnService;
+
 
     public Cnd queryWrapper(GenTable genTable) {
         Cnd cnd = Cnd.NEW();
@@ -121,19 +128,7 @@ public class GenTableServiceImpl extends BaseServiceImpl<GenTable> implements IG
      */
     @Override
     public TableData<GenTable> selectDbTableList(GenTable genTable,Integer pageNum, Integer pageSize) {
-        String sqlstr = " select table_name, table_comment, create_time, update_time from information_schema.tables " +
-                " where table_schema = (select database()) " +
-                " AND table_name NOT LIKE 'qrtz_%' " +
-                " AND table_name NOT IN (select table_name from gen_table) ";
-        if (Strings.isNotBlank(genTable.getTableName())) {
-            sqlstr += " AND lower(table_name) like lower(concat('%', @tableName, '%'))";
-        }
-        if (Strings.isNotBlank(genTable.getTableComment())) {
-            sqlstr += " AND lower(table_comment) like lower(concat('%', @tableComment, '%'))";
-        }
-        Sql sql = Sqls.create(sqlstr);
-        sql.params().set("tableName" , genTable.getTableName());
-        sql.params().set("tableComment" , genTable.getTableComment());
+        Sql sql = QueryUtils.getDbQuery(this.dao().meta().getType()).tableList( genTable.getTableName(),genTable.getTableComment(),"table_name","asc");
         Pager pager =this.dao().createPager(pageNum, pageSize);
         pager.setRecordCount((int) Daos.queryCount(this.dao(), sql));
         sql.setPager(pager);
@@ -153,13 +148,7 @@ public class GenTableServiceImpl extends BaseServiceImpl<GenTable> implements IG
      */
     @Override
     public List<GenTable> selectDbTableListByNames(String[] tableNames) {
-        String sqlstr =" select table_name, table_comment, create_time, update_time from information_schema.tables "  +
-                 " where table_name NOT LIKE 'qrtz_%'  and table_schema = (select database()) " +
-//                " and table_name NOT LIKE 'gen_%' "  +
-                 " and table_name in (@tableNames)";
-        Sql sql = Sqls.create(sqlstr);
-        sql.params().set("tableNames" , tableNames);
-        sql.setCallback(Sqls.callback.entities());
+        Sql sql = QueryUtils.getDbQuery(this.dao().meta().getType()).tableList(tableNames);
         Entity<GenTable> entity = dao().getEntity(GenTable.class);
         sql.setEntity(entity);
         dao().execute(sql);

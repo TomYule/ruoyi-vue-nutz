@@ -3,6 +3,7 @@ package com.ruoyi.generator.service;
 import java.util.List;
 
 import com.ruoyi.common.core.service.BaseServiceImpl;
+import com.ruoyi.generator.util.QueryUtils;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
@@ -19,6 +20,7 @@ import com.ruoyi.generator.domain.GenTableColumn;
  */
 @Service
 public class GenTableColumnServiceImpl extends BaseServiceImpl<GenTableColumn> implements IGenTableColumnService {
+
     public Cnd queryWrapper(GenTableColumn genTableColumn) {
         Cnd cnd = Cnd.NEW();
         if (Lang.isNotEmpty(genTableColumn)){
@@ -91,14 +93,7 @@ public class GenTableColumnServiceImpl extends BaseServiceImpl<GenTableColumn> i
 
 	@Override
 	public List<GenTableColumn> selectDbTableColumnsByName(String tableName) {
-		String sqlstr = " select column_name, (case when (is_nullable = 'no' && column_key != 'PRI') then '1' else null end) as is_required, " +
-				" (case when column_key = 'PRI' then '1' else '0' end) as is_pk, ordinal_position as sort, column_comment, " +
-				" (case when extra = 'auto_increment' then '1' else '0' end) as is_increment, column_type " +
-				" from information_schema.columns where table_schema = (select database()) and table_name = (@tableNames) " +
-				" order by ordinal_position ";
-		Sql sql = Sqls.create(sqlstr);
-		sql.params().set("tableNames" , tableName);
-		sql.setCallback(Sqls.callback.entities());
+        Sql sql = QueryUtils.getDbQuery(this.dao().meta().getType()).tableColumnsByName(tableName);
 		Entity<GenTableColumn> entity = dao().getEntity(GenTableColumn.class);
 		sql.setEntity(entity);
 		dao().execute(sql);

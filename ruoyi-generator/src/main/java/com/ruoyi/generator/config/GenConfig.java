@@ -1,5 +1,6 @@
 package com.ruoyi.generator.config;
 
+import com.ruoyi.generator.db.converts.enums.DateType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.PropertySource;
@@ -26,6 +27,15 @@ public class GenConfig
 
     /** 表前缀(类名不会包含表前缀) */
     public static String tablePrefix;
+
+    /**
+     * oracle 需要默认schema
+     */
+    public static String schema="";
+    /**
+     * 时间类型对应策略
+     */
+    public static DateType dateType = DateType.ONLY_DATE;
 
     public static String getAuthor()
     {

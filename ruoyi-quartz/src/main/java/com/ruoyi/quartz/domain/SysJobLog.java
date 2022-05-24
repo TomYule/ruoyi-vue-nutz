@@ -3,11 +3,9 @@ package com.ruoyi.quartz.domain;
 import java.io.Serializable;
 import java.util.Date;
 
-import com.ruoyi.common.core.domain.BaseModel;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
-import com.ruoyi.common.core.domain.BaseEntity;
 import org.nutz.dao.entity.annotation.*;
 
 /**
