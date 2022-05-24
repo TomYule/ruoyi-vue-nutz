@@ -351,7 +351,7 @@ public class BaseServiceImpl<T> extends IdNameEntityService<T> implements BaseSe
     @Override
     public int delete(Integer[] ids) {
         try{
-            return this.dao().clear(this.getEntityClass(), Cnd.where("id", "in", ids));
+            return this.dao().clear(this.getEntityClass(), Cnd.where(this.getEntity().getIdField().getColumnName(), "in", ids));
         }catch (Exception e){
             int row =0;
             for(Integer id:ids){
@@ -370,7 +370,7 @@ public class BaseServiceImpl<T> extends IdNameEntityService<T> implements BaseSe
     @Override
     public int delete(Long[] ids) {
         try {
-            return this.dao().clear(getEntityClass(), Cnd.where("id", "in", ids));
+            return this.dao().clear(getEntityClass(), Cnd.where(this.getEntity().getIdField().getColumnName(), "in", ids));
         }catch (Exception e){
             int row =0;
             for(Long id:ids){
@@ -395,7 +395,7 @@ public class BaseServiceImpl<T> extends IdNameEntityService<T> implements BaseSe
     @Override
     public int delete(String[] ids) {
         try {
-            return this.dao().clear(getEntityClass(), Cnd.where("id", "in", ids));
+            return this.dao().clear(getEntityClass(), Cnd.where(this.getEntity().getIdField().getColumnName(), "in", ids));
         }catch (Exception e){
             int row =0;
             for(String id:ids){
@@ -414,7 +414,7 @@ public class BaseServiceImpl<T> extends IdNameEntityService<T> implements BaseSe
      */
     @Override
     public int vDelete(String id) {
-        return this.dao().update(this.getEntityClass(), Chain.make("delFlag", true), Cnd.where("id", "=", id));
+        return this.dao().update(this.getEntityClass(), Chain.make("delFlag", true), Cnd.where(this.getEntity().getIdField().getColumnName(), "=", id));
     }
 
     /**
@@ -425,7 +425,7 @@ public class BaseServiceImpl<T> extends IdNameEntityService<T> implements BaseSe
      */
     @Override
     public int vDelete(String[] ids) {
-        return this.dao().update(this.getEntityClass(), Chain.make("delFlag", true), Cnd.where("id", "in", ids));
+        return this.dao().update(this.getEntityClass(), Chain.make("delFlag", true), Cnd.where(this.getEntity().getIdField().getColumnName(), "in", ids));
     }
 
     /**
