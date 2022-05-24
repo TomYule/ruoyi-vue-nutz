@@ -9,11 +9,11 @@
 	<a href="https://gitee.com/y_project/RuoYi-Vue/blob/master/LICENSE"><img src="https://img.shields.io/github/license/mashape/apistatus.svg"></a>
 </p>
 
-##为什么写这个项目
+## 为什么写这个项目
 咱们的性情总是喜欢调和、折中的、譬如你说，这屋子太暗，说在这里开一个天窗，大家一定是不允许的，但你主张拆掉屋顶，他们就会来调和，愿意开天窗了  
 希望更多的小伙伴能了解nutz项目
 ## 平台简介
-采用若依项目 只修改了service dao兼容nutz
+采用若依项目 只修改了service dao兼容nutz 保留git提交信息 可以兼容原作者提交信息更新
 若依是一套全部开源的快速开发平台，毫无保留给个人及企业免费使用。
 
 * 前端采用Vue、Element UI。
@@ -60,7 +60,8 @@ nutz Java小伙伴们的另一种选择
 - 陆陆续续收到一些打赏，为了更好的体验已用于演示服务器升级。谢谢各位小伙伴。
 
 演示地址：http://vue.ruoyi.vip  
-文档地址：http://doc.ruoyi.vip
+文档地址：http://doc.ruoyi.vip  
+Nutz文档地址: https://nutzam.com/core/nutz_preface.html  
 
 ## 演示图
 
