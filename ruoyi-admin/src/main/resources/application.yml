@@ -63,8 +63,8 @@ spring:
   messages:
     # 国际化资源文件路径
     basename: i18n/messages
-  profiles: 
-    active: druid
+  profiles:
+    active: dev
   # 文件上传
   servlet:
      multipart:
