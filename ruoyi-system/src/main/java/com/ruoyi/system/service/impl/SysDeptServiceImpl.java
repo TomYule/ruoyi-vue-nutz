@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.ruoyi.common.core.service.BaseServiceImpl;
+import com.ruoyi.system.domain.SysMenu;
 import com.ruoyi.system.service.ISysRoleService;
 import com.ruoyi.system.service.ISysUserService;
 import org.nutz.dao.Chain;
@@ -182,7 +183,7 @@ public class SysDeptServiceImpl extends BaseServiceImpl<SysDept> implements ISys
     @Override
     public int selectNormalChildrenDeptById(Long deptId) {
         Cnd cnd = Cnd.NEW();
-        cnd.where().andInBySql("dept_id" , "SELECT id FROM sys_dept  WHERE FIND_IN_SET ('%s',ancestors)" , deptId);
+        cnd.where().andInBySql("dept_id" , "SELECT dept_id FROM sys_dept  WHERE FIND_IN_SET ('%s',ancestors)" , deptId);
         cnd.and("status" , "=" , "0");
         cnd.and("del_flag" , "=" , "0");
         return count(cnd);
@@ -306,21 +307,27 @@ public class SysDeptServiceImpl extends BaseServiceImpl<SysDept> implements ISys
      * @param newAncestors 新的父ID集合
      * @param oldAncestors 旧的父ID集合
      */
-    public void updateDeptChildren(Long deptId, String newAncestors, String oldAncestors) {
-        Cnd cnd = Cnd.NEW();
-        cnd.where().andInBySql("dept_id" , "SELECT id FROM sys_dept  WHERE FIND_IN_SET ('%s',ancestors)" , deptId);
 
-        List<SysDept> children = query(cnd);
-        for (SysDept child : children) {
-            child.setAncestors(child.getAncestors().replaceFirst(oldAncestors, newAncestors));
-        }
-        if (children.size() > 0) {
-//            for (SysDept child : children)
-//            {
-//                update(Chain.make("ancestors" , "0")
-//            }
-//            update(Chain.make("ancestors" , "0"), Cnd.where("dept_id" , "in" , deptIds));
-//            deptMapper.updateDeptChildren(children);
+    public void updateDeptChildren(Long deptId, String newAncestors, String oldAncestors) {
+        if (!newAncestors.equals(oldAncestors)) {
+            Cnd cnd = Cnd.NEW();
+            cnd.where().andInBySql("dept_id", "SELECT dept_id FROM sys_dept  WHERE FIND_IN_SET ('%s',ancestors)", deptId);
+            List<SysDept> children = query(cnd);
+            for (SysDept child : children) {
+                child.setAncestors(child.getAncestors().replaceFirst(oldAncestors, newAncestors));
+            }
+            if (children.size() > 0) {
+                String sqlstr = "update sys_dept set ancestors = case dept_id ";
+                List<Long> ids = new ArrayList<>();
+                for (SysDept child : children) {
+                    sqlstr += " when " + child.getDeptId() + " then '" + child.getAncestors()+ "'";
+                    ids.add(child.getDeptId());
+                }
+                sqlstr += " end where dept_id in (@deptId)";
+                Sql sql = Sqls.create(sqlstr);
+                sql.params().set("deptId", ids);
+                dao().execute(sql);
+            }
         }
     }
 

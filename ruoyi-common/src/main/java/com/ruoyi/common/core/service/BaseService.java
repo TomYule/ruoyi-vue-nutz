@@ -1,5 +1,7 @@
 package com.ruoyi.common.core.service;
 
+import com.ruoyi.common.core.page.TableData;
+import com.ruoyi.common.core.page.TableDataInfo;
 import org.nutz.dao.*;
 import org.nutz.dao.pager.Pager;
 import org.springframework.data.domain.Page;
@@ -122,6 +124,7 @@ public interface BaseService<T> {
      */
     List<T> query(Condition cnd, Pager pager);
 
+    TableData<T> queryTable(Condition cnd, Pager pager);
 
     /**
      * 分页查询
@@ -132,6 +135,7 @@ public interface BaseService<T> {
      */
     public List<T> query(Condition cnd, int pageNumber, int pageSize);
 
+    TableData<T> queryTable(Condition cnd, int pageNumber, int pageSize);
     /**
      * 更新
      * @param obj
@@ -180,6 +184,7 @@ public interface BaseService<T> {
      */
     public int delete(Integer[] ids);
 
+
     /**
      * 批量删除
      *
@@ -187,6 +192,7 @@ public interface BaseService<T> {
      */
     public int delete(Long[] ids);
 
+    public int delete(List<Long> ids);
     /**
      * 批量删除
      *

@@ -13,5 +13,5 @@ import ${packageName}.domain.${ClassName};
 public interface I${ClassName}Service extends BaseService<${ClassName}>{
     List<${ClassName}> query(${ClassName} ${className});
 
-    List<${ClassName}> query(${ClassName} ${className},int pageNumber, int pageSize);
+    TableData<${ClassName}> query(${ClassName} ${className},int pageNumber, int pageSize);
 }

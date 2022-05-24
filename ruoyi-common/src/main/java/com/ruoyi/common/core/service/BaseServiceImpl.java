@@ -1,11 +1,11 @@
 package com.ruoyi.common.core.service;
 
+import com.ruoyi.common.core.page.TableData;
 import org.nutz.dao.*;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.util.Daos;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
-import org.nutz.plugin.spring.boot.service.entity.DataBaseEntity;
 import org.nutz.service.IdNameEntityService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -243,6 +243,14 @@ public class BaseServiceImpl<T> extends IdNameEntityService<T> implements BaseSe
         return dao().query(getEntityClass(), cnd, pager);
     }
 
+    @Override
+    public TableData<T> queryTable(Condition cnd, Pager pager) {
+        //记录数需手动设置
+        pager.setRecordCount(this.dao().count(this.getEntityClass(),cnd));
+        return new TableData(dao().query(getEntityClass(), cnd, pager)
+                , pager.getRecordCount());
+    }
+
     /**
      * 分页查询
      *
@@ -256,6 +264,15 @@ public class BaseServiceImpl<T> extends IdNameEntityService<T> implements BaseSe
         Pager pager = this.dao().createPager(pageNumber, pageSize);
         List<T> list = this.dao().query(this.getEntityClass(), cnd, pager);
         return list;
+    }
+
+    @Override
+    public TableData<T> queryTable(Condition cnd, int pageNumber, int pageSize) {
+        Pager pager = this.dao().createPager(pageNumber, pageSize);
+        //记录数需手动设置
+        pager.setRecordCount(this.dao().count(this.getEntityClass(),cnd));
+        List<T> list = this.dao().query(this.getEntityClass(), cnd, pager);
+        return new TableData(list,pager.getRecordCount());
     }
 
     /**
@@ -333,7 +350,16 @@ public class BaseServiceImpl<T> extends IdNameEntityService<T> implements BaseSe
      */
     @Override
     public int delete(Integer[] ids) {
-        return this.dao().clear(getEntityClass(), Cnd.where("id", "in", ids));
+        try{
+            return this.dao().clear(this.getEntityClass(), Cnd.where("id", "in", ids));
+        }catch (Exception e){
+            int row =0;
+            for(Integer id:ids){
+                this.dao().delete(this.getEntityClass(),id);
+                row++;
+            }
+            return row;
+        }
     }
 
     /**
@@ -343,7 +369,22 @@ public class BaseServiceImpl<T> extends IdNameEntityService<T> implements BaseSe
      */
     @Override
     public int delete(Long[] ids) {
-        return this.dao().clear(getEntityClass(), Cnd.where("id", "in", ids));
+        try {
+            return this.dao().clear(getEntityClass(), Cnd.where("id", "in", ids));
+        }catch (Exception e){
+            int row =0;
+            for(Long id:ids){
+                this.dao().delete(this.getEntityClass(),id);
+                row++;
+            }
+            return row;
+        }
+    }
+
+    @Override
+    public int delete(List<Long> ids) {
+        Long[] idsArray = ids.toArray(new Long[ids.size()]);
+        return this.delete(idsArray);
     }
 
     /**
@@ -353,7 +394,16 @@ public class BaseServiceImpl<T> extends IdNameEntityService<T> implements BaseSe
      */
     @Override
     public int delete(String[] ids) {
-       return this.dao().clear(getEntityClass(), Cnd.where("id", "in", ids));
+        try {
+            return this.dao().clear(getEntityClass(), Cnd.where("id", "in", ids));
+        }catch (Exception e){
+            int row =0;
+            for(String id:ids){
+                this.dao().delete(this.getEntityClass(),id);
+                row++;
+            }
+            return row;
+        }
     }
 
     /**

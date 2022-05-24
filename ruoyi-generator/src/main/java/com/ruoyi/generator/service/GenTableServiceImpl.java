@@ -13,15 +13,19 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import com.ruoyi.common.core.domain.entity.SysUser;
+import com.ruoyi.common.core.page.TableData;
 import com.ruoyi.common.core.service.BaseServiceImpl;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
+import org.nutz.dao.Cnd;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
+import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Sql;
+import org.nutz.dao.util.Daos;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.slf4j.Logger;
@@ -55,10 +59,35 @@ public class GenTableServiceImpl extends BaseServiceImpl<GenTable> implements IG
     private static final Logger log = LoggerFactory.getLogger(GenTableServiceImpl.class);
 
     @Autowired
-    private GenTableMapper genTableMapper;
+    private IGenTableColumnService genTableColumnService;
 
-    @Autowired
-    private GenTableColumnMapper genTableColumnMapper;
+    public Cnd queryWrapper(GenTable genTable) {
+        Cnd cnd = Cnd.NEW();
+        if (Lang.isNotEmpty(genTable)){
+            if (Lang.isNotEmpty(genTable.getTableName())){
+                cnd.and("table_name" , "like" , "%" + genTable.getTableName() + "%");
+            }
+            if (Lang.isNotEmpty(genTable.getTableComment())){
+                cnd.and("table_comment" , "like" , "%" + genTable.getTableComment() + "%");
+            }
+            if (Lang.isNotEmpty(genTable.getParams().get("beginCreateTime"))
+                    && Lang.isNotEmpty(genTable.getParams().get("endCreateTime"))){
+                cnd.and("create_time" , ">=" , genTable.getParams().get("beginCreateTime"));
+                cnd.and("create_time" , "<=" , genTable.getParams().get("endCreateTime"));
+            }
+        }
+        return cnd;
+    }
+
+    @Override
+    public List<GenTable> query(GenTable genTable) {
+        return this.query(queryWrapper(genTable));
+    }
+
+    @Override
+    public TableData<GenTable> query(GenTable genTable, int pageNumber, int pageSize) {
+        return this.queryTable(queryWrapper(genTable), pageNumber, pageSize);
+    }
 
     /**
      * 查询业务信息
@@ -88,10 +117,12 @@ public class GenTableServiceImpl extends BaseServiceImpl<GenTable> implements IG
      * 查询据库列表
      *
      * @param genTable 业务信息
+     *                 @param pageNum
+     *                 @param pageSize
      * @return 数据库表集合
      */
     @Override
-    public List<GenTable> selectDbTableList(GenTable genTable) {
+    public TableData<GenTable> selectDbTableList(GenTable genTable,Integer pageNum, Integer pageSize) {
         String sqlstr = " select table_name, table_comment, create_time, update_time from information_schema.tables " +
                 " where table_schema = (select database()) " +
                 " AND table_name NOT LIKE 'qrtz_%' " +
@@ -105,11 +136,15 @@ public class GenTableServiceImpl extends BaseServiceImpl<GenTable> implements IG
         Sql sql = Sqls.create(sqlstr);
         sql.params().set("tableName" , genTable.getTableName());
         sql.params().set("tableComment" , genTable.getTableComment());
+        Pager pager =this.dao().createPager(pageNum, pageSize);
+        pager.setRecordCount((int) Daos.queryCount(this.dao(), sql));
+        sql.setPager(pager);
         sql.setCallback(Sqls.callback.entities());
         Entity<GenTable> entity = dao().getEntity(GenTable.class);
         sql.setEntity(entity);
         dao().execute(sql);
-        return sql.getList(GenTable.class);
+        TableData data = new TableData(sql.getList(GenTable.class),pager.getRecordCount());
+        return data;
     }
 
     /**
@@ -120,7 +155,17 @@ public class GenTableServiceImpl extends BaseServiceImpl<GenTable> implements IG
      */
     @Override
     public List<GenTable> selectDbTableListByNames(String[] tableNames) {
-        return genTableMapper.selectDbTableListByNames(tableNames);
+        String sqlstr =" select table_name, table_comment, create_time, update_time from information_schema.tables "  +
+                 " where table_name NOT LIKE 'qrtz_%'  and table_schema = (select database()) " +
+//                " and table_name NOT LIKE 'gen_%' "  +
+                 " and table_name in (@tableNames)";
+        Sql sql = Sqls.create(sqlstr);
+        sql.params().set("tableNames" , tableNames);
+        sql.setCallback(Sqls.callback.entities());
+        Entity<GenTable> entity = dao().getEntity(GenTable.class);
+        sql.setEntity(entity);
+        dao().execute(sql);
+        return sql.getList(GenTable.class);
     }
 
     /**
@@ -130,7 +175,7 @@ public class GenTableServiceImpl extends BaseServiceImpl<GenTable> implements IG
      */
     @Override
     public List<GenTable> selectGenTableAll() {
-        return genTableMapper.selectGenTableAll();
+        return query();
     }
 
     /**
@@ -144,10 +189,10 @@ public class GenTableServiceImpl extends BaseServiceImpl<GenTable> implements IG
     public void updateGenTable(GenTable genTable) {
         String options = JSON.toJSONString(genTable.getParams());
         genTable.setOptions(options);
-        int row = genTableMapper.updateGenTable(genTable);
+        int row = update(genTable);
         if (row > 0) {
             for (GenTableColumn cenTableColumn : genTable.getColumns()) {
-                genTableColumnMapper.updateGenTableColumn(cenTableColumn);
+                genTableColumnService.update(cenTableColumn);
             }
         }
     }
@@ -161,8 +206,8 @@ public class GenTableServiceImpl extends BaseServiceImpl<GenTable> implements IG
     @Override
     @Transactional
     public void deleteGenTableByIds(Long[] tableIds) {
-        genTableMapper.deleteGenTableByIds(tableIds);
-        genTableColumnMapper.deleteGenTableColumnByIds(tableIds);
+        delete(tableIds);
+        genTableColumnService.delete(Cnd.where("table_id","=",tableIds));
     }
 
     /**
@@ -178,13 +223,13 @@ public class GenTableServiceImpl extends BaseServiceImpl<GenTable> implements IG
             for (GenTable table : tableList) {
                 String tableName = table.getTableName();
                 GenUtils.initTable(table, operName);
-                int row = genTableMapper.insertGenTable(table);
+                int row = Lang.isEmpty(insert(table).getTableId())? 0 : 1;
                 if (row > 0) {
                     // 保存列信息
-                    List<GenTableColumn> genTableColumns = genTableColumnMapper.selectDbTableColumnsByName(tableName);
+                    List<GenTableColumn> genTableColumns = genTableColumnService.selectDbTableColumnsByName(tableName);
                     for (GenTableColumn column : genTableColumns) {
                         GenUtils.initColumnField(column, table);
-                        genTableColumnMapper.insertGenTableColumn(column);
+                        genTableColumnService.insertGenTableColumn(column);
                     }
                 }
             }
@@ -246,7 +291,7 @@ public class GenTableServiceImpl extends BaseServiceImpl<GenTable> implements IG
     @Override
     public void generatorCode(String tableName) {
         // 查询表信息
-        GenTable table = genTableMapper.selectGenTableByName(tableName);
+        GenTable table = fetch(tableName);
         // 设置主子表信息
         setSubTable(table);
         // 设置主键列信息
@@ -282,11 +327,11 @@ public class GenTableServiceImpl extends BaseServiceImpl<GenTable> implements IG
     @Override
     @Transactional
     public void synchDb(String tableName) {
-        GenTable table = genTableMapper.selectGenTableByName(tableName);
+        GenTable table = fetch(tableName);
         List<GenTableColumn> tableColumns = table.getColumns();
         Map<String, GenTableColumn> tableColumnMap = tableColumns.stream().collect(Collectors.toMap(GenTableColumn::getColumnName, Function.identity()));
 
-        List<GenTableColumn> dbTableColumns = genTableColumnMapper.selectDbTableColumnsByName(tableName);
+        List<GenTableColumn> dbTableColumns = genTableColumnService.selectDbTableColumnsByName(tableName);
         if (StringUtils.isEmpty(dbTableColumns)) {
             throw new ServiceException("同步数据失败，原表结构不存在");
         }
@@ -309,15 +354,17 @@ public class GenTableServiceImpl extends BaseServiceImpl<GenTable> implements IG
                     column.setIsRequired(prevColumn.getIsRequired());
                     column.setHtmlType(prevColumn.getHtmlType());
                 }
-                genTableColumnMapper.updateGenTableColumn(column);
+                genTableColumnService.updateGenTableColumn(column);
             } else {
-                genTableColumnMapper.insertGenTableColumn(column);
+                genTableColumnService.insertGenTableColumn(column);
             }
         });
 
-        List<GenTableColumn> delColumns = tableColumns.stream().filter(column -> !dbTableColumnNames.contains(column.getColumnName())).collect(Collectors.toList());
+        List<Long> delColumns = tableColumns.stream().filter(column -> !dbTableColumnNames.contains(column.getColumnName()))
+                .map(column -> column.getColumnId()).collect(Collectors.toList());
+
         if (StringUtils.isNotEmpty(delColumns)) {
-            genTableColumnMapper.deleteGenTableColumns(delColumns);
+            genTableColumnService.delete(delColumns);
         }
     }
 
@@ -343,7 +390,7 @@ public class GenTableServiceImpl extends BaseServiceImpl<GenTable> implements IG
      */
     private void generatorCode(String tableName, ZipOutputStream zip) {
         // 查询表信息
-        GenTable table = genTableMapper.selectGenTableByName(tableName);
+        GenTable table = fetch(tableName);
         // 设置主子表信息
         setSubTable(table);
         // 设置主键列信息
@@ -435,7 +482,7 @@ public class GenTableServiceImpl extends BaseServiceImpl<GenTable> implements IG
     public void setSubTable(GenTable table) {
         String subTableName = table.getSubTableName();
         if (StringUtils.isNotEmpty(subTableName)) {
-            table.setSubTable(genTableMapper.selectGenTableByName(subTableName));
+            table.setSubTable(fetch(subTableName));
         }
     }
 

@@ -16,11 +16,12 @@ import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.enums.BusinessType;
+import org.springframework.data.repository.query.Param;
 import ${packageName}.domain.${ClassName};
 import ${packageName}.service.I${ClassName}Service;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 #if($table.crud || $table.sub)
-import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.common.core.page.TableData;
 #elseif($table.tree)
 #end
 
@@ -43,15 +44,11 @@ public class ${ClassName}Controller extends BaseController
     @PreAuthorize("@ss.hasPermi('${permissionPrefix}:list')")
     @GetMapping("/list")
 #if($table.crud || $table.sub)
-    public TableDataInfo list(@Param("pageNum")Integer pageNum,
+    public TableData list(@Param("pageNum")Integer pageNum,
                               @Param("pageSize")Integer pageSize,
                                 ${ClassName} ${className}) {
-        Cnd cnd = Cnd.NEW();
-        if (Lang.isNotEmpty(${className}) ){
-            //cnd.and("name", "like", "%" + name +"%");
-        }
-        List<${ClassName}> list = ${className}Service.query(cnd,pageNum,pageSize);
-        return getDataTable(list);
+        TableData<${ClassName}> data = ${className}Service.query(${className},pageNum,pageSize);
+        return data;
     }
 #elseif($table.tree)
     public AjaxResult list(${ClassName} ${className})

@@ -1,6 +1,8 @@
 package com.ruoyi.generator.service;
 
 import java.util.List;
+
+import com.ruoyi.common.core.service.BaseService;
 import com.ruoyi.generator.domain.GenTableColumn;
 
 /**
@@ -8,8 +10,10 @@ import com.ruoyi.generator.domain.GenTableColumn;
  * 
  * @author ruoyi
  */
-public interface IGenTableColumnService
-{
+public interface IGenTableColumnService extends BaseService<GenTableColumn> {
+    List<GenTableColumn> query(GenTableColumn genTableColumn);
+
+    List<GenTableColumn> query(GenTableColumn genTableColumn,int pageNumber, int pageSize);
     /**
      * 查询业务字段列表
      * 
@@ -41,4 +45,6 @@ public interface IGenTableColumnService
      * @return 结果
      */
     public int deleteGenTableColumnByIds(String ids);
+
+    public List<GenTableColumn> selectDbTableColumnsByName(String tableName);
 }

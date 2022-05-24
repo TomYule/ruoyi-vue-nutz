@@ -70,7 +70,8 @@ public class ${ClassName}ServiceImpl extends BaseServiceImpl<${ClassName}> imple
         #elseif($queryType == "BETWEEN")
             if (Lang.isNotEmpty(${className}.getParams().get("begin$AttrName"))
                 && Lang.isNotEmpty(${className}.getParams().get("end$AttrName"))){
-                cnd.and("$columnName" , "<" , ${className}.getParams().get("end$AttrName"));
+                cnd.and("$columnName" , ">=" , ${className}.getParams().get("begin$AttrName"));
+                cnd.and("$columnName" , "<=" , ${className}.getParams().get("end$AttrName"));
             }
         #end
     #end
@@ -85,7 +86,7 @@ public class ${ClassName}ServiceImpl extends BaseServiceImpl<${ClassName}> imple
     }
 
     @Override
-    public List<${ClassName}> query(${ClassName} ${className}, int pageNumber, int pageSize) {
-        return this.query(queryWrapper(${className}), pageNumber, pageSize);
+    public TableData<${ClassName}> query(${ClassName} ${className}, int pageNumber, int pageSize) {
+        return this.queryTable(queryWrapper(${className}), pageNumber, pageSize);
     }
 }

@@ -60,6 +60,8 @@ public abstract class BaseModel implements Serializable {
     /**
      * 备注
      */
+    @Column("remark")
+    @Comment("备注")
     private String remark;
 
     /**
