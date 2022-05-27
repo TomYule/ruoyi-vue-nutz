@@ -95,6 +95,11 @@ spring:
     restart:
       # 热部署开关
       enabled: true
+  #定时任务
+  quartz:
+    job-store-type: jdbc
+    jdbc:
+      initialize-schema: always
   # redis 配置
   redis:
     # 地址
