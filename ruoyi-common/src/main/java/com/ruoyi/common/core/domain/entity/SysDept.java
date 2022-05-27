@@ -24,7 +24,7 @@ public class SysDept extends BaseModel {
 
     /** 部门id */
     @Id
-    @ColDefine(type = ColType.INT, width = 32)
+    @ColDefine(type = ColType.INT, width = 10)
     @Column("dept_id")
     @Comment("部门id")
     private Long deptId;

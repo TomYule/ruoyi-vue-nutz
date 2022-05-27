@@ -25,11 +25,6 @@ public class VelocityUtils {
     private static final String PROJECT_PATH = "main/java";
 
     /**
-     * mybatis空间路径
-     */
-    private static final String MYBATIS_PATH = "main/resources/mapper";
-
-    /**
      * 默认上级菜单，系统工具
      */
     private static final String DEFAULT_PARENT_MENU_ID = "3";
@@ -160,7 +155,7 @@ public class VelocityUtils {
         String businessName = genTable.getBusinessName();
 
         String javaPath = PROJECT_PATH + "/" + StringUtils.replace(packageName, "." , "/");
-        String mybatisPath = MYBATIS_PATH + "/" + moduleName;
+
         String vuePath = "vue";
 
         if (template.contains("domain.java.vm")) {
@@ -176,8 +171,6 @@ public class VelocityUtils {
             fileName = StringUtils.format("{}/service/impl/{}ServiceImpl.java" , javaPath, className);
         } else if (template.contains("controller.java.vm")) {
             fileName = StringUtils.format("{}/controller/{}Controller.java" , javaPath, className);
-//        } else if (template.contains("mapper.xml.vm")) {
-//            fileName = StringUtils.format("{}/{}Mapper.xml" , mybatisPath, className);
         } else if (template.contains("sql.vm")) {
             fileName = businessName + "Menu.sql";
         } else if (template.contains("api.js.vm")) {

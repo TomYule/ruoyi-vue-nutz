@@ -25,7 +25,7 @@ public class SysJob extends BaseModel {
      * 任务ID
      */
     @Id
-    @ColDefine(type = ColType.INT, width = 32)
+    @ColDefine(type = ColType.INT, width = 10)
     @Column("job_id")
     @Comment("任务ID")
     private Long jobId;

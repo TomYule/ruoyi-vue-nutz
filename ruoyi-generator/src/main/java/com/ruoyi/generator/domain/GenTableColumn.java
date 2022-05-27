@@ -21,7 +21,7 @@ public class GenTableColumn extends BaseModel {
     @Id
     @Column("column_id")
     @Comment("编号")
-    @ColDefine(type = ColType.INT, width = 64)
+    @ColDefine(type = ColType.INT, width = 10)
     private Long columnId;
 
     /**

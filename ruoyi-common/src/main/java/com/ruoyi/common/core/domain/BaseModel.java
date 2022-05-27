@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ruoyi.common.utils.SecurityUtils;
 import org.nutz.dao.entity.annotation.*;
 import org.nutz.lang.random.R;
-import org.nutz.plugin.spring.boot.service.entity.DataBaseEntity;
 
 import java.io.Serializable;
 import java.util.Date;

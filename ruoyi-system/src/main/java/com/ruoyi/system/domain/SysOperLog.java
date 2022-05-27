@@ -23,7 +23,7 @@ public class SysOperLog extends BaseModel {
      * 日志主键
      */
     @Id
-    @ColDefine(type = ColType.INT, width = 32)
+    @ColDefine(type = ColType.INT, width = 10)
     @Column("oper_id")
     @Comment("日志主键")
     private Long operId;

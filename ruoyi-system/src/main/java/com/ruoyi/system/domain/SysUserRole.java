@@ -3,7 +3,6 @@ package com.ruoyi.system.domain;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.nutz.dao.entity.annotation.*;
-import org.nutz.plugin.spring.boot.service.entity.DataBaseEntity;
 
 import java.io.Serializable;
 

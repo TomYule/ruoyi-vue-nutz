@@ -22,7 +22,7 @@ public class SysDictType extends BaseModel {
      * 字典主键
      */
     @Id
-    @ColDefine(type = ColType.INT, width = 32)
+    @ColDefine(type = ColType.INT, width = 10)
     @Column("dict_id")
     @Comment("字典主键")
     private Long dictId;

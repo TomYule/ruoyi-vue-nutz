@@ -25,8 +25,7 @@ public class SysRole extends BaseModel {
     @Id
     @Column("role_id")
     @Comment("角色ID")
-    @ColDefine(type = ColType.INT, width = 64)
-    @Prev(els = {@EL("uuid()")})
+    @ColDefine(type = ColType.INT, width = 10)
     @Excel(name = "角色序号" , cellType = ColumnType.NUMERIC)
     private Long roleId;
 

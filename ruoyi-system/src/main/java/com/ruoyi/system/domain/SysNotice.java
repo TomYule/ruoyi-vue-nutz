@@ -21,7 +21,7 @@ public class SysNotice extends BaseModel {
 
     /** 公告ID */
     @Id
-    @ColDefine(type = ColType.INT, width = 32)
+    @ColDefine(type = ColType.INT, width = 10)
     @Column("notice_id")
     @Comment("公告ID")
     private Long noticeId;

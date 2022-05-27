@@ -20,7 +20,7 @@ public class SysPost extends BaseModel {
      * 岗位ID
      */
     @Id
-    @ColDefine(type = ColType.INT, width = 32)
+    @ColDefine(type = ColType.INT, width = 10)
     @Column("post_id")
     @Comment("岗位ID")
     private Long postId;

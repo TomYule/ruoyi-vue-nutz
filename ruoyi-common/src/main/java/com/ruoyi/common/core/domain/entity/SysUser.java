@@ -30,7 +30,7 @@ public class SysUser extends BaseModel {
     @Id
     @Column("user_id")
     @Comment("用户ID")
-    @ColDefine(type = ColType.INT, width = 64)
+    @ColDefine(type = ColType.INT, width = 10)
     @Excel(name = "用户序号", cellType = ColumnType.NUMERIC, prompt = "用户编号")
     private Long userId;
 

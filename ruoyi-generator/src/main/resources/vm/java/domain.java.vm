@@ -33,7 +33,7 @@ public class ${ClassName} extends ${Entity}{
 #if($column.columnName == $pkColumn.columnName )
     #if('Long' == $column.javaType || 'Integer' == $column.javaType)
     @Id
-    @ColDefine(type = ColType.INT, width = 32)
+    @ColDefine(type = ColType.INT, width = 10)
     #else
     @Name
     @ColDefine(type = ColType.VARCHAR, width = 64)

@@ -26,7 +26,7 @@ public class SysMenu extends BaseModel {
      * 菜单ID
      */
     @Id
-    @ColDefine(type = ColType.INT, width = 32)
+    @ColDefine(type = ColType.INT, width = 10)
     @Column("menu_id")
     @Comment("菜单ID")
     private Long menuId;

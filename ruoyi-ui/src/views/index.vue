@@ -81,7 +81,7 @@
               <li>SpringBoot</li>
               <li>Spring Security</li>
               <li>JWT</li>
-              <li>MyBatis</li>
+              <li>Nutz</li>
               <li>Druid</li>
               <li>Fastjson</li>
               <li>...</li>
@@ -120,7 +120,7 @@
             <p>
               <i class="el-icon-user-solid"></i> QQ群：<s>满937441</s> <s>满887144332</s>
               <s>满180251782</s> <s>满104180207</s> <s>满186866453</s> <s>满201396349</s>
-              <s>满101456076</s> <s>满101539465</s> <s>满264312783</s> <s>满167385320</s> 
+              <s>满101456076</s> <s>满101539465</s> <s>满264312783</s> <s>满167385320</s>
               <a href="https://jq.qq.com/?_wv=1027&k=DuWxuULe" target="_blank">
                 139821253</a
               >

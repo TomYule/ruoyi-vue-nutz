@@ -21,7 +21,7 @@ public class SysDictData extends BaseModel {
 
     /** 字典编码 */
     @Id
-    @ColDefine(type = ColType.INT, width = 32)
+    @ColDefine(type = ColType.INT, width = 10)
     @Column("dict_code")
     @Comment("字典编码")
     private Long dictCode;

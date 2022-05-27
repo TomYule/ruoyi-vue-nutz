@@ -19,7 +19,7 @@ public class SysJobLog implements Serializable {
 
     /** 任务日志ID */
     @Id
-    @ColDefine(type = ColType.INT, width = 32)
+    @ColDefine(type = ColType.INT, width = 10)
     @Column("job_log_id")
     @Comment("任务日志ID")
     private Long jobLogId;

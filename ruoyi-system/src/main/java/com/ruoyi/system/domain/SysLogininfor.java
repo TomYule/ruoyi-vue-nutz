@@ -23,7 +23,7 @@ public class SysLogininfor extends BaseModel {
      * 访问ID
      */
     @Id
-    @ColDefine(type = ColType.INT, width = 32)
+    @ColDefine(type = ColType.INT, width = 10)
     @Column("info_id")
     @Comment("访问ID")
     private Long infoId;
