@@ -188,7 +188,7 @@ public class GenTableServiceImpl extends BaseServiceImpl<GenTable> implements IG
     @Transactional
     public void deleteGenTableByIds(Long[] tableIds) {
         delete(tableIds);
-        genTableColumnService.delete(Cnd.where("table_id","=",tableIds));
+        genTableColumnService.delete(Cnd.where("table_id","in",tableIds));
     }
 
     /**

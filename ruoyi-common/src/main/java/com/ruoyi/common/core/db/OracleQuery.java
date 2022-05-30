@@ -30,7 +30,7 @@ public class OracleQuery extends AbstractDbQuery {
 
     @Override
     public Sql tableList(String[] tableName) {
-        String sqlstr = "SELECT TABLE_NAME , COMMENTS as table_comment FROM ALL_TAB_COMMENTS where TABLE_NAME in (@TABNAME) ";
+        String sqlstr = "SELECT distinct TABLE_NAME , COMMENTS as table_comment FROM ALL_TAB_COMMENTS where TABLE_NAME in (@TABNAME) ";
         Sql sql = Sqls.create(sqlstr);
         sql.params().set("TABNAME",tableName);
         sql.setCallback(Sqls.callback.entities());
@@ -39,21 +39,26 @@ public class OracleQuery extends AbstractDbQuery {
 
     @Override
     public Sql tableColumnsByName(String tableName) {
-        String schema = "";
-        String sqlstr = "SELECT" +
-                "  A.COLUMN_NAME," +
-                "  CASE WHEN A.DATA_TYPE = 'NUMBER'" +
-                "    THEN" +
-                "      (CASE WHEN A.DATA_PRECISION IS NULL" +
-                "        THEN A.DATA_TYPE" +
-                "       WHEN NVL(A.DATA_SCALE, 0) > 0" +
-                "         THEN A.DATA_TYPE || '(' || A.DATA_PRECISION || ',' || A.DATA_SCALE || ')'" +
-                "       ELSE A.DATA_TYPE || '(' || A.DATA_PRECISION || ')' END)" +
-                "  ELSE A.DATA_TYPE END           DATA_TYPE," +
-                "  B.COMMENTS" +
+        String schema = "NUTZ";
+        String sqlstr = " SELECT A.COLUMN_NAME, "  +
+                "       CASE "  +
+                "           WHEN A.DATA_TYPE = 'NUMBER' THEN "  +
+                "               (CASE "  +
+                "                    WHEN A.DATA_PRECISION IS NULL THEN A.DATA_TYPE "  +
+                "                    WHEN NVL(A.DATA_SCALE, 0) > 0 "  +
+                "                        THEN A.DATA_TYPE || '(' || A.DATA_PRECISION || ',' || A.DATA_SCALE || ')' "  +
+                "                    ELSE A.DATA_TYPE || '(' || A.DATA_PRECISION || ')' END) "  +
+                "           ELSE A.DATA_TYPE END       column_type, "  +
+                "       B.COMMENTS as column_comment, "  +
+                "       (CASE WHEN DECODE(C.POSITION, '1', 'PRI') ='PRI' then '1' else null end) is_required, "  +
+                "       (CASE WHEN DECODE(C.POSITION, '1', 'PRI') ='PRI' then '1' else '0' end) is_pk, "  +
+                "       A.COLUMN_ID  as sort " +
                 " FROM ALL_TAB_COLUMNS A" +
-                "  INNER JOIN ALL_COL_COMMENTS B ON A.TABLE_NAME = B.TABLE_NAME AND A.COLUMN_NAME = B.COLUMN_NAME AND B.OWNER =  '"+ schema +"' " +
-                "  LEFT JOIN ALL_CONSTRAINTS D ON D.TABLE_NAME = A.TABLE_NAME AND D.CONSTRAINT_TYPE = 'P' AND D.OWNER = '"+ schema +"' " +
+                "          INNER JOIN ALL_COL_COMMENTS B "  +
+                "                    ON A.TABLE_NAME = B.TABLE_NAME AND A.COLUMN_NAME = B.COLUMN_NAME AND B.OWNER = '"+ schema +"' "  +
+                "         LEFT JOIN ALL_CONSTRAINTS D ON D.TABLE_NAME = A.TABLE_NAME AND D.CONSTRAINT_TYPE = 'P' AND D.OWNER = '"+ schema +"' "  +
+                "         LEFT JOIN ALL_CONS_COLUMNS C "  +
+                "                   ON C.CONSTRAINT_NAME = D.CONSTRAINT_NAME AND C.COLUMN_NAME = A.COLUMN_NAME AND C.OWNER = '"+ schema +"' " +
                 " WHERE A.OWNER =  '"+ schema +"' AND A.TABLE_NAME=@TABNAME " +
                 " ORDER BY A.COLUMN_ID ";
         Sql sql = Sqls.create(sqlstr);
