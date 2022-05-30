@@ -8,8 +8,6 @@ import com.ruoyi.common.core.domain.BaseModel;
 import io.swagger.annotations.ApiModel;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.annotation.Excel.ColumnType;
 import com.ruoyi.common.annotation.Excel.Type;
@@ -238,8 +236,6 @@ public class SysUser extends BaseModel {
         this.avatar = avatar;
     }
 
-    @JsonIgnore
-    @JsonProperty
     public String getPassword()
     {
         return password;
