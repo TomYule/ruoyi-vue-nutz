@@ -3,9 +3,8 @@ package com.ruoyi.generator.service;
 import java.util.List;
 
 import com.ruoyi.common.core.service.BaseServiceImpl;
-import com.ruoyi.generator.util.QueryUtils;
+import com.ruoyi.common.utils.QueryUtils;
 import org.nutz.dao.Cnd;
-import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.sql.Sql;
 import org.nutz.lang.Lang;

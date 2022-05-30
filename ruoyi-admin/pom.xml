@@ -48,6 +48,12 @@
             <artifactId>mssql-jdbc</artifactId>
             <version>11.1.1.jre8-preview</version>
         </dependency>
+        <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>ojdbc6</artifactId>
+            <version>12.1.0.1-atlassian-hosted</version>
+            <!-- <scope>test</scope> -->
+        </dependency>
 
 
         <!-- 核心模块-->

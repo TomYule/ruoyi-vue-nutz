@@ -1,4 +1,4 @@
-package com.ruoyi.generator.db;
+package com.ruoyi.common.core.db;
 
 import org.nutz.dao.Sqls;
 import org.nutz.dao.sql.Sql;
@@ -52,5 +52,15 @@ public class PostgreSqlQuery extends AbstractDbQuery {
         sql.params().set("tableName", tableName);
         sql.setCallback(Sqls.callback.entities());
         return sql;
+    }
+
+    @Override
+    public Sql selectMenuTreeByAdmin() {
+        return null;
+    }
+
+    @Override
+    public Sql selectMenuTreeByUserId(Long userId) {
+        return null;
     }
 }

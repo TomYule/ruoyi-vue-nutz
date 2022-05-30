@@ -1,6 +1,5 @@
-package com.ruoyi.generator.db;
+package com.ruoyi.common.core.db;
 
-import com.ruoyi.generator.config.GenConfig;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.sql.Sql;
 import org.nutz.lang.Strings;
@@ -40,7 +39,7 @@ public class OracleQuery extends AbstractDbQuery {
 
     @Override
     public Sql tableColumnsByName(String tableName) {
-        String schema = GenConfig.schema;
+        String schema = "";
         String sqlstr = "SELECT" +
                 "  A.COLUMN_NAME," +
                 "  CASE WHEN A.DATA_TYPE = 'NUMBER'" +
@@ -59,6 +58,34 @@ public class OracleQuery extends AbstractDbQuery {
                 " ORDER BY A.COLUMN_ID ";
         Sql sql = Sqls.create(sqlstr);
         sql.params().set("TABNAME", tableName);
+        sql.setCallback(Sqls.callback.entities());
+        return sql;
+    }
+
+    @Override
+    public Sql selectMenuTreeByAdmin() {
+        String sqlstr = " select distinct m.menu_id, m.parent_id, m.menu_name, m.path, m.component, m.query, m.visible," +
+                " m.status, COALESCE(m.perms,'') as perms, m.is_frame, m.is_cache, m.menu_type, m.icon, m.order_num, m.create_time " +
+                " from sys_menu m where m.menu_type in ('M', 'C') and m.status = 0 " +
+                " order by m.parent_id, m.order_num ";
+        Sql sql = Sqls.create(sqlstr);
+        sql.setCallback(Sqls.callback.entities());
+        return sql;
+    }
+
+    @Override
+    public Sql selectMenuTreeByUserId(Long userId) {
+        String sqlstr =   " select distinct m.menu_id, m.parent_id, m.menu_name, m.path, m.component, m.query," +
+                " m.visible, m.status, COALESCE(m.perms,'') as perms, m.is_frame, m.is_cache, m.menu_type, m.icon, m.order_num, m.create_time "  +
+                " from sys_menu m "  +
+                "  left join sys_role_menu rm on m.menu_id = rm.menu_id "  +
+                "  left join sys_user_role ur on rm.role_id = ur.role_id "  +
+                "  left join sys_role ro on ur.role_id = ro.role_id "  +
+                "  left join sys_user u on ur.user_id = u.user_id "  +
+                " where u.user_id = @userId and m.menu_type in ('M', 'C') and m.status = 0  AND ro.status = 0 "  +
+                " order by m.parent_id, m.order_num";
+        Sql sql = Sqls.create(sqlstr);
+        sql.params().set("userId" , userId);
         sql.setCallback(Sqls.callback.entities());
         return sql;
     }

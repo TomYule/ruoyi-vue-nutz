@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import com.ruoyi.common.core.domain.entity.SysMenu;
 import com.ruoyi.common.core.service.BaseServiceImpl;
+import com.ruoyi.common.utils.QueryUtils;
 import com.ruoyi.system.service.ISysRoleMenuService;
 import com.ruoyi.system.service.ISysRoleService;
 import org.nutz.dao.Cnd;
@@ -191,28 +192,14 @@ public class SysMenuServiceImpl extends BaseServiceImpl<SysMenu> implements ISys
     public List<SysMenu> selectMenuTreeByUserId(Long userId) {
         List<SysMenu> menus = null;
         if (SecurityUtils.isAdmin(userId)) {
-            String sqlstr = " select distinct m.menu_id, m.parent_id, m.menu_name, m.path, m.component, m.`query`, m.visible," +
-                    " m.status, ifnull(m.perms,'') as perms, m.is_frame, m.is_cache, m.menu_type, m.icon, m.order_num, m.create_time " +
-                    " from sys_menu m where m.menu_type in ('M', 'C') and m.status = 0 " +
-                    " order by m.parent_id, m.order_num ";
-            Sql sql = Sqls.create(sqlstr);
+            Sql sql = QueryUtils.getDbQuery(this.dao().meta().getType()).selectMenuTreeByAdmin();
             sql.setCallback(Sqls.callback.entities());
             Entity<SysMenu> entity = dao().getEntity(SysMenu.class);
             sql.setEntity(entity);
             dao().execute(sql);
             menus = sql.getList(SysMenu.class);
         } else {
-            String sqlstr =   " select distinct m.menu_id, m.parent_id, m.menu_name, m.path, m.component, m.`query`," +
-                    " m.visible, m.status, ifnull(m.perms,'') as perms, m.is_frame, m.is_cache, m.menu_type, m.icon, m.order_num, m.create_time "  +
-                     " from sys_menu m "  +
-                      "  left join sys_role_menu rm on m.menu_id = rm.menu_id "  +
-                      "  left join sys_user_role ur on rm.role_id = ur.role_id "  +
-                      "  left join sys_role ro on ur.role_id = ro.role_id "  +
-                      "  left join sys_user u on ur.user_id = u.user_id "  +
-                     " where u.user_id = @userId and m.menu_type in ('M', 'C') and m.status = 0  AND ro.status = 0 "  +
-                     " order by m.parent_id, m.order_num";
-            Sql sql = Sqls.create(sqlstr);
-            sql.params().set("userId" , userId);
+            Sql sql = QueryUtils.getDbQuery(this.dao().meta().getType()).selectMenuTreeByUserId(userId);
             sql.setCallback(Sqls.callback.entities());
             Entity<SysMenu> entity = dao().getEntity(SysMenu.class);
             sql.setEntity(entity);

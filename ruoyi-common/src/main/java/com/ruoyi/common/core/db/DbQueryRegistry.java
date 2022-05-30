@@ -1,4 +1,4 @@
-package com.ruoyi.generator.db;
+package com.ruoyi.common.core.db;
 
 import org.nutz.dao.DB;
 

@@ -1,4 +1,4 @@
-package com.ruoyi.generator.db;
+package com.ruoyi.common.core.db;
 import org.nutz.dao.sql.Sql;
 
 /**
@@ -29,5 +29,9 @@ public interface IDbQuery {
      * @return
      */
     public Sql tableColumnsByName(String tableName);
-
+    
+    
+    public Sql selectMenuTreeByAdmin();
+    
+    public Sql selectMenuTreeByUserId(Long userId);
 }

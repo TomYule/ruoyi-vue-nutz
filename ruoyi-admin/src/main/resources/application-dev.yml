@@ -3,7 +3,8 @@ spring:
     datasource:
         type: com.alibaba.druid.pool.DruidDataSource
 #        driverClassName: com.mysql.cj.jdbc.Driver
-        driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+#        driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+        driverClassName: oracle.jdbc.driver.OracleDriver
         druid:
             # 主库数据源
             master:
@@ -32,7 +33,7 @@ spring:
             # 配置一个连接在池中最大生存的时间，单位是毫秒
             maxEvictableIdleTimeMillis: 900000
             # 配置检测连接是否有效
-            validationQuery: SELECT 1
+            validationQuery: select 1 from dual
             testWhileIdle: true
             testOnBorrow: false
             testOnReturn: false

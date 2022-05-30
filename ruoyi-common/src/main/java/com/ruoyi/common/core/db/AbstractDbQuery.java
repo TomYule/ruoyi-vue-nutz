@@ -1,4 +1,4 @@
-package com.ruoyi.generator.db;
+package com.ruoyi.common.core.db;
 
 /**
  * 抽象类 查询接口
