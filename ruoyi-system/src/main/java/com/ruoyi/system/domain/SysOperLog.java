@@ -114,6 +114,7 @@ public class SysOperLog extends BaseModel {
     @Column("oper_param")
     @Comment("请求参数")
     @Excel(name = "请求参数")
+    @ColDefine(type = ColType.VARCHAR, width = 2000)
     private String operParam;
 
     /**
@@ -122,6 +123,7 @@ public class SysOperLog extends BaseModel {
     @Column("json_result")
     @Comment("返回参数")
     @Excel(name = "返回参数")
+    @ColDefine(type = ColType.VARCHAR, width = 2000)
     private String jsonResult;
 
     /**
@@ -138,6 +140,7 @@ public class SysOperLog extends BaseModel {
     @Column("error_msg")
     @Comment("错误消息")
     @Excel(name = "错误消息")
+    @ColDefine(type = ColType.VARCHAR, width = 2000)
     private String errorMsg;
 
     /**

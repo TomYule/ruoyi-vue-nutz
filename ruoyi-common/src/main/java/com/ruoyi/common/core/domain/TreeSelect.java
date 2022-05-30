@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.ruoyi.common.core.domain.entity.SysDept;
-import com.ruoyi.system.domain.SysMenu;
+import com.ruoyi.common.core.domain.entity.SysMenu;
 
 /**
  * Treeselect树结构实体类

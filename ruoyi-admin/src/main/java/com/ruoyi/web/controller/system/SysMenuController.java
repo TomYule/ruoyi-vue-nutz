@@ -2,7 +2,7 @@ package com.ruoyi.web.controller.system;
 
 import java.util.List;
 
-import com.ruoyi.system.domain.SysMenu;
+import com.ruoyi.common.core.domain.entity.SysMenu;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;

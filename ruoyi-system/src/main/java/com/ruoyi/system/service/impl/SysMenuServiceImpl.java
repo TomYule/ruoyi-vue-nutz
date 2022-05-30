@@ -1,16 +1,10 @@
 package com.ruoyi.system.service.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import com.ruoyi.common.core.domain.entity.SysMenu;
 import com.ruoyi.common.core.service.BaseServiceImpl;
-import com.ruoyi.system.domain.SysMenu;
 import com.ruoyi.system.service.ISysRoleMenuService;
 import com.ruoyi.system.service.ISysRoleService;
 import org.nutz.dao.Cnd;

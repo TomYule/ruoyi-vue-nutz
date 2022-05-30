@@ -86,6 +86,28 @@ public class FileUtils {
         return FileUploadUtils.getPathFileName(uploadDir, pathName);
     }
 
+    public static String writeFileBytes(byte[] data, String uploadDir) throws IOException {
+        FileOutputStream fos = null;
+        String pathName = "";
+        try {
+            //文件路径（路径+文件名）
+            File file = new File(uploadDir);
+            //文件不存在则创建文件，先创建目录
+            if (!file.exists()) {
+                File dir = new File(file.getParent());
+                dir.mkdirs();
+                file.createNewFile();
+            }
+            //文件输出流用于将数据写入文件
+            fos = new FileOutputStream(file);
+            fos.write(data);
+        } finally {
+            IOUtils.close(fos);
+        }
+        return FileUploadUtils.getPathFileName(uploadDir, pathName);
+    }
+
+
     /**
      * 删除文件
      *
