@@ -38,7 +38,6 @@ public class SysDictType extends BaseModel {
     /**
      * 字典类型
      */
-    @Name
     @Column("dict_type")
     @Comment("字典类型")
     @Excel(name = "字典类型")

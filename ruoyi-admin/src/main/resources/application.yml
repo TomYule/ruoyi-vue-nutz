@@ -14,21 +14,7 @@ ruoyi:
   addressEnabled: false
   # 验证码类型 math 数组计算 char 字符验证
   captchaType: math
-#nutz-dao
-#nutz:
-#  dao:
-#    runtime:
-#      add-column: true
-#      basepackage:
-#        - com.ruoyi.**.domain
-#      check-index: true
-#      create: true
-#      delete-column: true
-#      foce-create: false
-#      migration: true
-#    sqlmanager:
-#      paths:
-#        - sqls
+
 nutz:
   dao:
     runtime:
@@ -95,11 +81,11 @@ spring:
     restart:
       # 热部署开关
       enabled: true
-  #定时任务
-  quartz:
-    job-store-type: jdbc
-    jdbc:
-      initialize-schema: always
+#  #定时任务
+#  quartz:
+#    job-store-type: jdbc
+#    jdbc:
+#      initialize-schema: always
   # redis 配置
   redis:
     # 地址

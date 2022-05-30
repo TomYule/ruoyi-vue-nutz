@@ -34,7 +34,6 @@ public class SysRole extends BaseModel {
     /**
      * 角色名称
      */
-    @Name
     @Column("role_name")
     @Comment("角色名称")
     @Excel(name = "角色名称")

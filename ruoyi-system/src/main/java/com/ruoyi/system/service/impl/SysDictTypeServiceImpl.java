@@ -120,7 +120,7 @@ public class SysDictTypeServiceImpl extends BaseServiceImpl<SysDictType> impleme
      */
     @Override
     public SysDictType selectDictTypeByType(String dictType) {
-        return fetch(dictType);
+        return fetch(Cnd.where("dict_type", "=", dictType));
     }
 
     /**
@@ -214,7 +214,7 @@ public class SysDictTypeServiceImpl extends BaseServiceImpl<SysDictType> impleme
     @Override
     public String checkDictTypeUnique(SysDictType dict) {
         Long dictId = StringUtils.isNull(dict.getDictId()) ? -1L : dict.getDictId();
-        SysDictType dictType = fetch(dict.getDictType());
+        SysDictType dictType = fetch(Cnd.where("dict_type", "=", dict.getDictType()));
         if (StringUtils.isNotNull(dictType) && dictType.getDictId().longValue() != dictId.longValue()) {
             return UserConstants.NOT_UNIQUE;
         }

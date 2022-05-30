@@ -39,7 +39,6 @@ public class SysUser extends BaseModel {
     private Long deptId;
 
     /** 用户账号 */
-    @Name
     @Excel(name = "登录名称")
     @Column("user_name")
     @Comment("用户账号")

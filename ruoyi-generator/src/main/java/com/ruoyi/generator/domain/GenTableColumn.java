@@ -34,7 +34,6 @@ public class GenTableColumn extends BaseModel {
     /**
      * 列名称
      */
-    @Name
     @Column("column_name")
     @Comment("列名称")
     private String columnName;

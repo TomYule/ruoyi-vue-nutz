@@ -272,7 +272,7 @@ public class GenTableServiceImpl extends BaseServiceImpl<GenTable> implements IG
     @Override
     public void generatorCode(String tableName) {
         // 查询表信息
-        GenTable table = fetch(tableName);
+        GenTable table = fetch(Cnd.where("table_name","=",tableName));
         // 设置主子表信息
         setSubTable(table);
         // 设置主键列信息
@@ -308,7 +308,7 @@ public class GenTableServiceImpl extends BaseServiceImpl<GenTable> implements IG
     @Override
     @Transactional
     public void synchDb(String tableName) {
-        GenTable table = fetch(tableName);
+        GenTable table = fetch(Cnd.where("table_name","=",tableName));
         List<GenTableColumn> tableColumns = table.getColumns();
         Map<String, GenTableColumn> tableColumnMap = tableColumns.stream().collect(Collectors.toMap(GenTableColumn::getColumnName, Function.identity()));
 
@@ -371,7 +371,7 @@ public class GenTableServiceImpl extends BaseServiceImpl<GenTable> implements IG
      */
     private void generatorCode(String tableName, ZipOutputStream zip) {
         // 查询表信息
-        GenTable table = fetch(tableName);
+        GenTable table = fetch(Cnd.where("table_name","=",tableName));
         // 设置主子表信息
         setSubTable(table);
         // 设置主键列信息
@@ -463,7 +463,7 @@ public class GenTableServiceImpl extends BaseServiceImpl<GenTable> implements IG
     public void setSubTable(GenTable table) {
         String subTableName = table.getSubTableName();
         if (StringUtils.isNotEmpty(subTableName)) {
-            table.setSubTable(fetch(subTableName));
+            table.setSubTable(fetch(Cnd.where("table_name","=",subTableName)));
         }
     }
 

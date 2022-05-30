@@ -36,7 +36,6 @@ public class SysPost extends BaseModel {
     /**
      * 岗位名称
      */
-    @Name
     @Column("post_name")
     @Comment("岗位名称")
     @Excel(name = "岗位名称")

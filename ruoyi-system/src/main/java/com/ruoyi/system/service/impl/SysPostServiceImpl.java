@@ -61,7 +61,7 @@ public class SysPostServiceImpl extends BaseServiceImpl<SysPost> implements ISys
     @Override
     public String checkPostNameUnique(SysPost post) {
         Long postId = StringUtils.isNull(post.getPostId()) ? -1L : post.getPostId();
-        SysPost info = this.fetch(post.getPostName());
+        SysPost info = this.fetch(Cnd.where("post_name","=",post.getPostName()));
         if (StringUtils.isNotNull(info) && info.getPostId().longValue() != postId.longValue()) {
             return UserConstants.NOT_UNIQUE;
         }

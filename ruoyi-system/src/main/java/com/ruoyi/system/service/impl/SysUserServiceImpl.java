@@ -201,7 +201,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements ISys
      */
     @Override
     public SysUser selectUserByUserName(String userName) {
-        return this.fetch(userName);
+        return this.fetch(Cnd.where("user_name","=",userName));
     }
 
     /**
@@ -603,7 +603,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements ISys
         for (SysUser user : userList) {
             try {
                 // 验证是否存在这个用户
-                SysUser u = this.fetch(user.getUserName());
+                SysUser u = this.fetch(Cnd.where("user_name","=",user.getUserName()));
                 if (StringUtils.isNull(u)) {
                     BeanValidators.validateWithException(validator, user);
                     user.setPassword(SecurityUtils.encryptPassword(password));

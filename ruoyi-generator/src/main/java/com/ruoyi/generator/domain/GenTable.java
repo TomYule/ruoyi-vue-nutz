@@ -31,7 +31,6 @@ public class GenTable extends BaseModel {
     /**
      * 表名称
      */
-    @Name
     @Column("table_name")
     @Comment("表名称")
     @NotBlank(message = "表名称不能为空")

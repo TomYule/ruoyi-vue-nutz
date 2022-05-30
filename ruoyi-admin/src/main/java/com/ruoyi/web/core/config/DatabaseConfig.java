@@ -95,7 +95,7 @@ public class DatabaseConfig {
                     dao.insert(dictData, FieldFilter.create(SysDictData.class, FieldMatcher.create(false)));
                 }
             } catch (Exception e) {
-
+                e.printStackTrace();
             }
         }
     }
