@@ -4,11 +4,14 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import com.ruoyi.common.core.domain.BaseModel;
+import com.ruoyi.system.domain.SysMenu;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.annotation.Excel.ColumnType;
 import org.nutz.dao.entity.annotation.*;
+
+import java.util.List;
 
 /**
  * 角色表 sys_role
@@ -109,6 +112,9 @@ public class SysRole extends BaseModel {
     public SysRole() {
 
     }
+
+    @ManyMany(from = "role_id", relation = "sys_role_menu", to = "menu_id")
+    protected List<SysMenu> menus;
 
     public SysRole(Long roleId) {
         this.roleId = roleId;
@@ -221,6 +227,14 @@ public class SysRole extends BaseModel {
 
     public void setDeptIds(Long[] deptIds) {
         this.deptIds = deptIds;
+    }
+
+    public List<SysMenu> getMenus() {
+        return menus;
+    }
+
+    public void setMenus(List<SysMenu> menus) {
+        this.menus = menus;
     }
 
     @Override

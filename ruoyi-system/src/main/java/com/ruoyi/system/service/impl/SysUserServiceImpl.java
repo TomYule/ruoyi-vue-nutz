@@ -358,7 +358,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements ISys
     @Transactional
     public int insertUser(SysUser user) {
         // 新增用户信息
-        int rows = insertUser(user);
+        int rows = Lang.isEmpty(insert(user))? 0 : 1;
         // 新增用户岗位关联
         insertUserPost(user);
         // 新增用户与角色管理
@@ -466,7 +466,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements ISys
      */
     @Override
     public int resetUserPwd(String userName, String password) {
-        return this.update(Chain.make("password" , password), Cnd.where("user_name" , "=" , userName));
+        return this.update(Chain.make("password" , SecurityUtils.encryptPassword(password)), Cnd.where("user_name" , "=" , userName));
     }
 
     /**
