@@ -114,6 +114,9 @@ public class SysRole extends BaseModel {
     @ManyMany(from = "role_id", relation = "sys_role_menu", to = "menu_id")
     protected List<SysMenu> menus;
 
+    @ManyMany(from = "role_id", relation = "sys_user_role", to = "user_id")
+    private List<SysUser> users;
+
     public SysRole(Long roleId) {
         this.roleId = roleId;
     }
@@ -233,6 +236,14 @@ public class SysRole extends BaseModel {
 
     public void setMenus(List<SysMenu> menus) {
         this.menus = menus;
+    }
+
+    public List<SysUser> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<SysUser> users) {
+        this.users = users;
     }
 
     @Override

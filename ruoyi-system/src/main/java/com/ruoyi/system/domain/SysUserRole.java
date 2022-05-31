@@ -16,6 +16,11 @@ import java.io.Serializable;
 public class SysUserRole implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    @Id
+    @Column("id")
+    @Comment("id")
+    private Long id;
+
     /**
      * 用户ID
      */
@@ -29,6 +34,14 @@ public class SysUserRole implements Serializable {
     @Column("role_id")
     @Comment("角色ID")
     private Long roleId;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public void setUserId(Long userId) {
         this.userId = userId;

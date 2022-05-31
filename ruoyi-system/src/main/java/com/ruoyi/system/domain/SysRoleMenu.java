@@ -15,6 +15,11 @@ import java.io.Serializable;
 public class SysRoleMenu implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    @Id
+    @Column("id")
+    @Comment("id")
+    private Long id;
+
     /**
      * 角色ID
      */
@@ -43,6 +48,14 @@ public class SysRoleMenu implements Serializable {
 
     public Long getMenuId() {
         return menuId;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     @Override

@@ -18,6 +18,11 @@ import java.io.Serializable;
 public class SysRoleDept implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    @Id
+    @Column("id")
+    @Comment("id")
+    private Long id;
+
     /**
      * 角色ID
      */
@@ -46,6 +51,14 @@ public class SysRoleDept implements Serializable {
 
     public Long getDeptId() {
         return deptId;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     @Override

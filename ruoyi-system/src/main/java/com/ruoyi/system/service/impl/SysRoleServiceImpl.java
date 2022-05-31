@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.ruoyi.common.core.page.TableData;
 import com.ruoyi.common.core.service.BaseServiceImpl;
 import com.ruoyi.system.service.ISysRoleDeptService;
@@ -411,7 +412,8 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRole> implements ISys
             checkRoleAllowed(new SysRole(roleId));
             checkRoleDataScope(roleId);
             SysRole role = selectRoleById(roleId);
-            if (countUserRoleByRoleId(roleId) > 0) {
+            role = fetchLinks(role,"users");
+            if (ObjectUtil.isNotNull(role.getUsers()) && role.getUsers().size() > 0) {
                 throw new ServiceException(String.format("%1$s已分配,不能删除", role.getRoleName()));
             }
         }

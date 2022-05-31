@@ -16,6 +16,11 @@ import java.io.Serializable;
 public class SysUserPost implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    @Id
+    @Column("id")
+    @Comment("id")
+    private Long id;
+
     /**
      * 用户ID
      */
@@ -44,6 +49,14 @@ public class SysUserPost implements Serializable {
 
     public Long getPostId() {
         return postId;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     @Override
