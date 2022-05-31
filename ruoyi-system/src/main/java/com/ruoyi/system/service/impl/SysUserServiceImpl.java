@@ -12,7 +12,9 @@ import org.nutz.dao.Chain;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
+import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Sql;
+import org.nutz.dao.util.Daos;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.slf4j.Logger;
@@ -130,7 +132,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements ISys
      */
     @Override
 //    @DataScope(deptAlias = "d", userAlias = "u")
-    public List<SysUser> selectAllocatedList(SysUser user) {
+    public TableData<SysUser> selectAllocatedList(SysUser user,int pageNumber, int pageSize) {
         String sqlstr = "select distinct u.user_id, u.dept_id, u.user_name, u.nick_name, u.email, u.phonenumber, u.status, u.create_time " +
                 " from sys_user u " +
                 " left join sys_dept d on u.dept_id = d.dept_id " +
@@ -150,11 +152,13 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements ISys
         sql.params().set("roleId" , user.getRoleId());
         sql.params().set("userName" , user.getUserName());
         sql.params().set("phonenumber" , user.getPhonenumber());
+        Pager pager =this.dao().createPager(pageNumber, pageSize);
+        pager.setRecordCount((int) Daos.queryCount(this.dao(), sql));
         sql.setCallback(Sqls.callback.entities());
         Entity<SysUser> entity = dao().getEntity(SysUser.class);
         sql.setEntity(entity);
         dao().execute(sql);
-        return sql.getList(SysUser.class);
+        return new TableData(sql.getList(SysUser.class),pager.getRecordCount());
     }
 
     /**
@@ -165,7 +169,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements ISys
      */
     @Override
 //    @DataScope(deptAlias = "d", userAlias = "u")
-    public List<SysUser> selectUnallocatedList(SysUser user) {
+    public TableData<SysUser> selectUnallocatedList(SysUser user,int pageNumber, int pageSize) {
         String sqlstr = " select distinct u.user_id, u.dept_id, u.user_name, u.nick_name, u.email, u.phonenumber, u.status, u.create_time " +
                 " from sys_user u " +
                 " left join sys_dept d on u.dept_id = d.dept_id " +
@@ -187,10 +191,12 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements ISys
         sql.params().set("userName" , user.getUserName());
         sql.params().set("phonenumber" , user.getPhonenumber());
         sql.setCallback(Sqls.callback.entities());
+        Pager pager =this.dao().createPager(pageNumber, pageSize);
+        pager.setRecordCount((int) Daos.queryCount(this.dao(), sql));
         Entity<SysUser> entity = dao().getEntity(SysUser.class);
         sql.setEntity(entity);
         dao().execute(sql);
-        return sql.getList(SysUser.class);
+        return new TableData(sql.getList(SysUser.class),pager.getRecordCount());
     }
 
     /**

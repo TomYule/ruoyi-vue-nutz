@@ -3,16 +3,33 @@ package com.ruoyi.common.core.db;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.sql.Sql;
 import org.nutz.lang.Strings;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Component;
+
 
 /**
  * @author Haiming
  * @date 2020/8/11 8:33 PM
  */
+@Component
+@ConfigurationProperties(prefix = "gen")
+@PropertySource(value = {"classpath:generator.yml"})
 public class OracleQuery extends AbstractDbQuery {
+
+    private String schema = "";
+
+    @Value("${schema}")
+    public void setSchema(String schema) {
+        this.schema = schema;
+    }
 
     @Override
     public Sql tableList(String tableName, String tableComment, String orderByColumn, String isAsc) {
-        String sqlstr = "SELECT TABLE_NAME , COMMENTS as table_comment FROM ALL_TAB_COMMENTS where not regexp_like(OWNER,'SYS|SYSTEM|OUTLN|XDB|HR|APEX')";
+        String sqlstr = "SELECT TABLE_NAME , COMMENTS as table_comment FROM ALL_TAB_COMMENTS " +
+                " where not regexp_like(OWNER,'SYS|SYSTEM|OUTLN|XDB|HR|APEX') " +
+                " AND table_name NOT IN (select table_name from gen_table) ";
         if (Strings.isNotBlank(tableName)) {
             tableName = tableName.toUpperCase();
             sqlstr += "and TABLE_NAME like @TABNAME";
@@ -39,7 +56,6 @@ public class OracleQuery extends AbstractDbQuery {
 
     @Override
     public Sql tableColumnsByName(String tableName) {
-        String schema = "NUTZ";
         String sqlstr = " SELECT A.COLUMN_NAME, "  +
                 "       CASE "  +
                 "           WHEN A.DATA_TYPE = 'NUMBER' THEN "  +

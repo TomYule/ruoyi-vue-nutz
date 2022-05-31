@@ -28,7 +28,7 @@ public interface ISysUserService extends BaseService<SysUser>{
      * @param user 用户信息
      * @return 用户信息集合信息
      */
-    public List<SysUser> selectAllocatedList(SysUser user);
+    public TableData<SysUser> selectAllocatedList(SysUser user,int pageNumber, int pageSize);
 
     /**
      * 根据条件分页查询未分配用户角色列表
@@ -36,7 +36,7 @@ public interface ISysUserService extends BaseService<SysUser>{
      * @param user 用户信息
      * @return 用户信息集合信息
      */
-    public List<SysUser> selectUnallocatedList(SysUser user);
+    public TableData<SysUser> selectUnallocatedList(SysUser user,int pageNumber, int pageSize);
 
     /**
      * 通过用户名查询用户

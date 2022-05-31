@@ -50,6 +50,13 @@ public class TableData<T> implements Serializable {
         this.setMsg("查询成功");
     }
 
+    public TableData(List<T> list) {
+        this.rows = list;
+        this.total = total;
+        this.setCode(200);
+        this.setMsg("查询成功");
+    }
+
     public long getTotal() {
         return total;
     }
