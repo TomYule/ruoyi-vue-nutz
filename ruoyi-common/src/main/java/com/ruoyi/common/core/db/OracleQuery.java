@@ -18,8 +18,6 @@ import org.springframework.stereotype.Component;
 @PropertySource(value = {"classpath:generator.yml"})
 public class OracleQuery extends AbstractDbQuery {
 
-    private String schema = "";
-
     @Value("${schema}")
     public void setSchema(String schema) {
         this.schema = schema;

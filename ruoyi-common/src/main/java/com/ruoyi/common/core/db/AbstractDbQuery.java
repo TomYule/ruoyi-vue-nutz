@@ -6,5 +6,5 @@ package com.ruoyi.common.core.db;
  * @date 2020/8/4 10:28 AM
  */
 public abstract class AbstractDbQuery implements IDbQuery {
-
+    public String schema = "";
 }

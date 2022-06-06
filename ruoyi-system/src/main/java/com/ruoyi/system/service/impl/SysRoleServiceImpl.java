@@ -344,11 +344,13 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRole> implements ISys
         AtomicInteger rows = new AtomicInteger(1);
         // 新增用户与角色管理
         List<SysRoleMenu> list = new ArrayList<SysRoleMenu>();
-        for (Long menuId : role.getMenuIds()) {
-            SysRoleMenu rm = new SysRoleMenu();
-            rm.setRoleId(role.getRoleId());
-            rm.setMenuId(menuId);
-            list.add(rm);
+        if(ObjectUtil.isNotNull(role.getMenuIds()) &&role.getMenuIds().length > 0){
+            for (Long menuId : role.getMenuIds()) {
+                SysRoleMenu rm = new SysRoleMenu();
+                rm.setRoleId(role.getRoleId());
+                rm.setMenuId(menuId);
+                list.add(rm);
+            }
         }
         if (list.size() > 0) {
             list.stream().forEach(sysRoleMenu -> {

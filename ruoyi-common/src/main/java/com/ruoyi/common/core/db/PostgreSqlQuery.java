@@ -56,11 +56,29 @@ public class PostgreSqlQuery extends AbstractDbQuery {
 
     @Override
     public Sql selectMenuTreeByAdmin() {
-        return null;
+        String sqlstr = " SELECT DISTINCT M.MENU_ID, M.PARENT_ID, M.MENU_NAME, M.PATH, M.COMPONENT, M.QUERY, M.VISIBLE," +
+                " M.STATUS, COALESCE(M.PERMS,'') AS PERMS, M.IS_FRAME, M.IS_CACHE, M.MENU_TYPE, M.ICON, M.ORDER_NUM, M.CREATE_TIME " +
+                " FROM SYS_MENU M WHERE M.MENU_TYPE IN ('M', 'C') AND M.STATUS = '0' " +
+                " ORDER BY M.PARENT_ID, M.ORDER_NUM ";
+        Sql sql = Sqls.create(sqlstr);
+        sql.setCallback(Sqls.callback.entities());
+        return sql;
     }
 
     @Override
     public Sql selectMenuTreeByUserId(Long userId) {
-        return null;
+        String sqlstr = " SELECT DISTINCT M.MENU_ID, M.PARENT_ID, M.MENU_NAME, M.PATH, M.COMPONENT, M.QUERY," +
+                " M.VISIBLE, M.STATUS, IFNULL(M.PERMS,'') AS PERMS, M.IS_FRAME, M.IS_CACHE, M.MENU_TYPE, M.ICON, M.ORDER_NUM, M.CREATE_TIME "  +
+                " FROM SYS_MENU M "  +
+                "  LEFT JOIN SYS_ROLE_MENU RM ON M.MENU_ID = RM.MENU_ID "  +
+                "  LEFT JOIN SYS_USER_ROLE UR ON RM.ROLE_ID = UR.ROLE_ID "  +
+                "  LEFT JOIN SYS_ROLE RO ON UR.ROLE_ID = RO.ROLE_ID "  +
+                "  LEFT JOIN SYS_USER U ON UR.USER_ID = U.USER_ID "  +
+                " WHERE U.USER_ID = @userId AND M.MENU_TYPE IN ('M', 'C') AND M.STATUS = '0'  AND RO.STATUS = '0' "  +
+                " ORDER BY M.PARENT_ID, M.ORDER_NUM";
+        Sql sql = Sqls.create(sqlstr);
+        sql.params().set("userId" , userId);
+        sql.setCallback(Sqls.callback.entities());
+        return sql;
     }
 }

@@ -18,24 +18,33 @@ ruoyi:
 nutz:
   dao:
     runtime:
-      create: true #是否自动建表 默认true
-      migration: true #是否自动变更 默认true
-      add-column: true # 是否添加列 默认true
-      delete-column: true # 是否删除列 默认true
-      foce-create: false # 是否删表重建，注意此功能会删除全部表及数据，一般应用于demo或测试 默认false
-      check-index: true # 是否检查索引 默认true
-      basepackage: # 相关实体所在包
+      #是否自动建表 默认true
+      create: true
+      #是否自动变更 建议不要打开 会出问题
+      migration: false
+      # 是否添加列 默认true
+      add-column: true
+      # 是否删除列 默认true
+      delete-column: true
+      # 是否删表重建，注意此功能会删除全部表及数据，一般应用于demo或测试 默认false
+      foce-create: false
+      # 是否检查索引 默认true
+      check-index: true
+      # 相关实体所在包
+      basepackage:
         - com.ruoyi.**.domain
     sql-manager:
-      mode: file #自定义sql管理模式 file和xml
-      paths: # 自定义sql文件路径
+      #自定义sql管理模式 file和xml
+      mode: file
+      # 自定义sql文件路径
+      paths:
         - sqls
   json:
     enabled: true #是否启用，默认true
     mode: compact #json模式，默认compact
     ignore-null: true # 是否忽略空对象
     compact: true # 是否启用压缩模式
-    date-format: yyyy-MM-dd Hh:mm:ss # 日期格式化
+    date-format: yyyy-MM-dd HH:mm:ss # 日期格式化
 
 # 开发环境配置
 server:
