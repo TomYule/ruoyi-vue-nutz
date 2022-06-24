@@ -161,11 +161,11 @@ public class SysMenuServiceImpl extends BaseServiceImpl<SysMenu> implements ISys
     @Override
     public Set<String> selectMenuPermsByUserId(Long userId) {
         String sqlstr =  " select distinct m.perms "  +
-                 " from sys_menu m "  +
-                  "  left join sys_role_menu rm on m.menu_id = rm.menu_id "  +
-                  "  left join sys_user_role ur on rm.role_id = ur.role_id "  +
-                  "  left join sys_role r on r.role_id = ur.role_id "  +
-                 " where m.status = '0' and r.status = '0' and ur.user_id = @userId";
+                " from sys_menu m "  +
+                "  left join sys_role_menu rm on m.menu_id = rm.menu_id "  +
+                "  left join sys_user_role ur on rm.role_id = ur.role_id "  +
+                "  left join sys_role r on r.role_id = ur.role_id "  +
+                " where m.status = '0' and r.status = '0' and ur.user_id = @userId";
         Sql sql = Sqls.create(sqlstr);
         sql.params().set("userId" , userId);
         sql.setCallback(Sqls.callback.entities());
@@ -344,7 +344,7 @@ public class SysMenuServiceImpl extends BaseServiceImpl<SysMenu> implements ISys
     @Override
     public boolean hasChildByMenuId(Long menuId) {
         int result = this.count(Cnd.where("parent_id","=",menuId));
-        return result > 0 ? true : false;
+        return result > 0;
     }
 
     /**
@@ -356,7 +356,7 @@ public class SysMenuServiceImpl extends BaseServiceImpl<SysMenu> implements ISys
     @Override
     public boolean checkMenuExistRole(Long menuId) {
         int result = sysRoleMenuService.count(Cnd.where("menu_id","=",menuId));
-        return result > 0 ? true : false;
+        return result > 0;
     }
 
     /**
