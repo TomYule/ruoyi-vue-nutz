@@ -82,6 +82,13 @@ public interface ISysMenuService extends BaseService<SysMenu> {
     public List<TreeSelect> buildMenuTreeSelect(List<SysMenu> menus);
 
     /**
+     * 插入树形菜单
+     * @param menus
+     * @param parentId
+     * @return
+     */
+    public List<SysMenu> insertTree(List<SysMenu> menus,Long parentId);
+    /**
      * 根据菜单ID查询信息
      * 
      * @param menuId 菜单ID

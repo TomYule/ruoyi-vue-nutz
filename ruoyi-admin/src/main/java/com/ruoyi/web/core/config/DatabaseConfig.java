@@ -5,14 +5,18 @@ import com.ruoyi.common.core.domain.entity.*;
 import com.ruoyi.common.utils.file.FileUtils;
 import com.ruoyi.quartz.domain.SysJob;
 import com.ruoyi.system.domain.SysConfig;
+import com.ruoyi.system.service.ISysDeptService;
+import com.ruoyi.system.service.ISysMenuService;
 import com.ruoyi.system.service.ISysUserService;
 import org.nutz.dao.*;
 import org.nutz.dao.sql.Sql;
+import org.nutz.lang.Lang;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
+import java.util.Random;
 
 /**
  * @author haiming yu
@@ -24,7 +28,10 @@ public class DatabaseConfig {
     private Dao dao;
     @Autowired
     private ISysUserService userService;
-
+    @Autowired
+    private ISysMenuService menuService;
+    @Autowired
+    private ISysDeptService deptService;
     @PostConstruct
     public void init() {
 //        String path = "D:\\IdeaProjects\\ruoyi-vue-nutz\\ruoyi-framework\\target";
@@ -34,7 +41,7 @@ public class DatabaseConfig {
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
-
+        Random random = new Random();
         //若必要的数据不存在，则初始化数据库
         if (0 == dao.count(SysUser.class)) {
             try {
@@ -57,9 +64,8 @@ public class DatabaseConfig {
 
                 String data = FileUtils.getFileData("db/menu.json");
                 List<SysMenu> menuList = JSON.parseArray(data, SysMenu.class);
-                for (SysMenu menu : menuList) {
-                    dao.fastInsert(menu);
-                }
+                menuList = menuService.buildMenuTree(menuList);
+                menuList = menuService.insertTree(menuList,null);
 
                 String roleJson = FileUtils.getFileData("db/role.json");
                 List<SysRole> roleList = JSON.parseArray(roleJson, SysRole.class);
@@ -70,9 +76,21 @@ public class DatabaseConfig {
                         dao.insertRelation(role, "menus");
                     }
                 }
+
+
+                String deptJson = FileUtils.getFileData("db/dept.json");
+                List<SysDept> deptList = JSON.parseArray(deptJson, SysDept.class);
+                deptList = deptService.buildDeptTree(deptList);
+                deptService.insertTree(deptList,null);
+                deptList = deptService.query();
+
                 String userJson = FileUtils.getFileData("db/user.json");
                 List<SysUser> userList = JSON.parseArray(userJson, SysUser.class);
                 for (SysUser user : userList) {
+                    SysDept dept = deptList.get(random.nextInt(deptList.size()));
+                    if(Lang.isNotEmpty(dept)){
+                        user.setDeptId(dept.getDeptId());
+                    }
                     dao.fastInsert(user);
                     if ("admin".equals(user.getUserName())) {
                         user.setPassword("admin123");
@@ -82,12 +100,6 @@ public class DatabaseConfig {
                     }
                 }
 
-                String deptJson = FileUtils.getFileData("db/dept.json");
-                List<SysDept> deptList = JSON.parseArray(deptJson, SysDept.class);
-                for (SysDept d : deptList) {
-                    dao.fastInsert(d);
-
-                }
                 String configJson = FileUtils.getFileData("db/config.json");
                 List<SysConfig> configList =JSON.parseArray(configJson, SysConfig.class);
 

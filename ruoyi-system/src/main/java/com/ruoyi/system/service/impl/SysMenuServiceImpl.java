@@ -324,6 +324,22 @@ public class SysMenuServiceImpl extends BaseServiceImpl<SysMenu> implements ISys
         return menuTrees.stream().map(TreeSelect::new).collect(Collectors.toList());
     }
 
+    @Override
+    public List<SysMenu> insertTree(List<SysMenu> menus,Long parentId) {
+        if(Lang.isNotEmpty(menus) && menus.size() > 0){
+            for(SysMenu m:menus){
+                if(Lang.isNotEmpty(parentId)){
+                    m.setParentId(parentId);
+                }
+                insert(m);
+                if(Lang.isNotEmpty(m.getChildren()) && m.getChildren().size()> 0){
+                    insertTree(m.getChildren(),m.getMenuId());
+                }
+            }
+        }
+        return menus;
+    }
+
     /**
      * 根据菜单ID查询信息
      *

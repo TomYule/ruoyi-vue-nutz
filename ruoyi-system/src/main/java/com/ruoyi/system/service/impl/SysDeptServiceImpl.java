@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.ruoyi.common.core.domain.entity.SysMenu;
 import com.ruoyi.common.core.page.TableData;
 import com.ruoyi.common.core.service.BaseServiceImpl;
 import com.ruoyi.system.service.ISysRoleService;
@@ -120,6 +121,23 @@ public class SysDeptServiceImpl extends BaseServiceImpl<SysDept> implements ISys
         }
         return returnList;
     }
+
+    @Override
+    public List<SysDept> insertTree(List<SysDept> depts, Long parentId) {
+        if(Lang.isNotEmpty(depts) && depts.size() > 0){
+            for(SysDept d:depts){
+                if(Lang.isNotEmpty(parentId)){
+                    d.setParentId(parentId);
+                }
+                insert(d);
+                if(Lang.isNotEmpty(d.getChildren()) && d.getChildren().size()> 0){
+                    insertTree(d.getChildren(),d.getDeptId());
+                }
+            }
+        }
+        return depts;
+    }
+
 
     /**
      * 构建前端所需要下拉树结构

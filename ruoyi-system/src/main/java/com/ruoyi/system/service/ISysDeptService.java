@@ -3,6 +3,7 @@ package com.ruoyi.system.service;
 import java.util.List;
 import com.ruoyi.common.core.domain.TreeSelect;
 import com.ruoyi.common.core.domain.entity.SysDept;
+import com.ruoyi.common.core.domain.entity.SysMenu;
 import com.ruoyi.common.core.page.TableData;
 import com.ruoyi.common.core.service.BaseService;
 
@@ -30,6 +31,14 @@ public interface ISysDeptService extends BaseService<SysDept> {
      * @return 树结构列表
      */
     public List<SysDept> buildDeptTree(List<SysDept> depts);
+
+    /**
+     * 插入部门
+     * @param depts
+     * @param parentId
+     * @return
+     */
+    public List<SysDept> insertTree(List<SysDept> depts, Long parentId);
 
     /**
      * 构建前端所需要下拉树结构
