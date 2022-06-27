@@ -6,9 +6,8 @@ import com.ruoyi.common.utils.file.FileUtils;
 import com.ruoyi.quartz.domain.SysJob;
 import com.ruoyi.system.domain.SysConfig;
 import com.ruoyi.system.service.ISysUserService;
-import org.nutz.dao.Dao;
-import org.nutz.dao.FieldFilter;
-import org.nutz.dao.FieldMatcher;
+import org.nutz.dao.*;
+import org.nutz.dao.sql.Sql;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
@@ -39,11 +38,29 @@ public class DatabaseConfig {
         //若必要的数据不存在，则初始化数据库
         if (0 == dao.count(SysUser.class)) {
             try {
+                // SQL server 需要特殊处理
+                if(DB.SQLSERVER.equals(dao.meta().getType())){
+                    Sql sqlOff = Sqls.create("SET IDENTITY_INSERT $table OFF");
+                    sqlOff.vars().set("table",dao.getEntity(SysMenu.class).getTableName());
+                    dao.execute(sqlOff);
+                    sqlOff.vars().set("table",dao.getEntity(SysRole.class).getTableName());
+                    dao.execute(sqlOff);
+                    sqlOff.vars().set("table",dao.getEntity(SysUser.class).getTableName());
+                    dao.execute(sqlOff);
+                    sqlOff.vars().set("table",dao.getEntity(SysDept.class).getTableName());
+                    dao.execute(sqlOff);
+                    sqlOff.vars().set("table",dao.getEntity(SysConfig.class).getTableName());
+                    dao.execute(sqlOff);
+                    sqlOff.vars().set("table",dao.getEntity(SysJob.class).getTableName());
+                    dao.execute(sqlOff);
+                }
+
                 String data = FileUtils.getFileData("db/menu.json");
                 List<SysMenu> menuList = JSON.parseArray(data, SysMenu.class);
                 for (SysMenu menu : menuList) {
-                    dao.insert(menu, FieldFilter.create(SysMenu.class, FieldMatcher.create(false)));
+                    dao.fastInsert(menu);
                 }
+
                 String roleJson = FileUtils.getFileData("db/role.json");
                 List<SysRole> roleList = JSON.parseArray(roleJson, SysRole.class);
                 for (SysRole role : roleList) {
@@ -56,7 +73,7 @@ public class DatabaseConfig {
                 String userJson = FileUtils.getFileData("db/user.json");
                 List<SysUser> userList = JSON.parseArray(userJson, SysUser.class);
                 for (SysUser user : userList) {
-                    dao.insert(user, FieldFilter.create(SysUser.class, FieldMatcher.create(false)));
+                    dao.fastInsert(user);
                     if ("admin".equals(user.getUserName())) {
                         user.setPassword("admin123");
                         userService.resetUserPwd("admin", "admin123");
@@ -68,32 +85,50 @@ public class DatabaseConfig {
                 String deptJson = FileUtils.getFileData("db/dept.json");
                 List<SysDept> deptList = JSON.parseArray(deptJson, SysDept.class);
                 for (SysDept d : deptList) {
-                    dao.insert(d, FieldFilter.create(SysDept.class, FieldMatcher.create(false)));
+                    dao.fastInsert(d);
+
                 }
                 String configJson = FileUtils.getFileData("db/config.json");
                 List<SysConfig> configList =JSON.parseArray(configJson, SysConfig.class);
 
                 for(SysConfig config:configList){
-                    dao.insert(config);
+                    dao.fastInsert(config);
                 }
 
                 String taskJson = FileUtils.getFileData("db/job.json");
                 List<SysJob> jobList = JSON.parseArray(taskJson, SysJob.class);
                 for (SysJob j : jobList) {
-                    dao.insert(j);
+                    dao.fastInsert(j);
                 }
 
                 String dictTypeJson = FileUtils.getFileData("db/dictType.json");
                 List<SysDictType> dictTypeList = JSON.parseArray(dictTypeJson, SysDictType.class);
                 for (SysDictType dictType : dictTypeList) {
-                    dao.insert(dictType, FieldFilter.create(SysDictType.class, FieldMatcher.create(false)));
+                    dao.fastInsert(dictType);
                 }
 
                 String dictDataJson = FileUtils.getFileData("db/dictData.json");
                 List<SysDictData> dictDataList = JSON.parseArray(dictDataJson, SysDictData.class);
                 for (SysDictData dictData : dictDataList) {
-                    dao.insert(dictData, FieldFilter.create(SysDictData.class, FieldMatcher.create(false)));
+                    dao.fastInsert(dictData);
                 }
+
+                if(DB.SQLSERVER.equals(dao.meta().getType())){
+                    Sql sqlOn = Sqls.create("SET IDENTITY_INSERT $table ON");
+                    sqlOn.vars().set("table",dao.getEntity(SysMenu.class).getTableName());
+                    dao.execute(sqlOn);
+                    sqlOn.vars().set("table",dao.getEntity(SysRole.class).getTableName());
+                    dao.execute(sqlOn);
+                    sqlOn.vars().set("table",dao.getEntity(SysUser.class).getTableName());
+                    dao.execute(sqlOn);
+                    sqlOn.vars().set("table",dao.getEntity(SysDept.class).getTableName());
+                    dao.execute(sqlOn);
+                    sqlOn.vars().set("table",dao.getEntity(SysConfig.class).getTableName());
+                    dao.execute(sqlOn);
+                    sqlOn.vars().set("table",dao.getEntity(SysJob.class).getTableName());
+                    dao.execute(sqlOn);
+                }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
