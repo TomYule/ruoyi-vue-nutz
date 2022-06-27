@@ -8,6 +8,9 @@ git clone https://gitee.com/y_project/RuoYi-Vue
 cd ruoyi-ui
 
 # 安装依赖
+
+npm install --g yarn
+
 yarn install
 
 

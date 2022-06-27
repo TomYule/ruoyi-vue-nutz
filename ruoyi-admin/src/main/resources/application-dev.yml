@@ -5,7 +5,7 @@ spring:
 #        driverClassName: com.mysql.cj.jdbc.Driver
 #        driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
 #        driverClassName: oracle.jdbc.driver.OracleDriver
-#        driverClassName: org.h2.Driver
+        driverClassName: org.h2.Driver
 #        driverClassName: com.ibm.db2.jcc.DB2Driver
         driverClassName: org.postgresql.Driver
         druid:
@@ -36,7 +36,7 @@ spring:
             # 配置一个连接在池中最大生存的时间，单位是毫秒
             maxEvictableIdleTimeMillis: 900000
             # 配置检测连接是否有效
-            validationQuery: select version()
+            validationQuery: select 1
             testWhileIdle: true
             testOnBorrow: false
             testOnReturn: false
