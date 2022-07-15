@@ -99,9 +99,9 @@ public class SysConfigServiceImpl extends BaseServiceImpl<SysConfig> implements 
      * @return true开启，false关闭
      */
     @Override
-    public boolean selectCaptchaOnOff() {
+    public boolean selectCaptchaEnabled() {
         String captchaEnabled = selectConfigByKey("sys.account.captchaEnabled");
-        if (StringUtils.isEmpty(captchaOnOff)) {
+        if (StringUtils.isEmpty(captchaEnabled)) {
             return true;
         }
         return Convert.toBool(captchaEnabled);
@@ -186,8 +186,6 @@ public class SysConfigServiceImpl extends BaseServiceImpl<SysConfig> implements 
     public void clearConfigCache()
     {
         Collection<String> keys = redisCache.keys(CacheConstants.SYS_CONFIG_KEY + "*");
-    public void clearConfigCache() {
-        Collection<String> keys = redisCache.keys(Constants.SYS_CONFIG_KEY + "*");
         redisCache.deleteObject(keys);
     }
 

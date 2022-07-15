@@ -2,10 +2,11 @@
 spring:
     datasource:
         type: com.alibaba.druid.pool.DruidDataSource
+        driverClassName: org.h2.Driver
 #        driverClassName: com.mysql.cj.jdbc.Driver
-        driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+#        driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
 #        driverClassName: oracle.jdbc.driver.OracleDriver
-#        driverClassName: org.h2.Driver
+
 #        driverClassName: com.ibm.db2.jcc.DB2Driver
         driverClassName: org.postgresql.Driver
         druid:
