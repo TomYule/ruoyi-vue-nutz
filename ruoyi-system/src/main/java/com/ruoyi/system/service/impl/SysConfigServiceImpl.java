@@ -1,7 +1,7 @@
 package com.ruoyi.system.service.impl;
 
 import com.ruoyi.common.annotation.DataSource;
-import com.ruoyi.common.constant.Constants;
+import com.ruoyi.common.constant.CacheConstants;
 import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.core.page.TableData;
 import com.ruoyi.common.core.redis.RedisCache;
@@ -63,7 +63,7 @@ public class SysConfigServiceImpl extends BaseServiceImpl<SysConfig> implements 
 
     /**
      * 查询参数配置信息
-     *
+     * 
      * @param configId 参数配置ID
      * @return 参数配置信息
      */
@@ -95,21 +95,21 @@ public class SysConfigServiceImpl extends BaseServiceImpl<SysConfig> implements 
 
     /**
      * 获取验证码开关
-     *
+     * 
      * @return true开启，false关闭
      */
     @Override
     public boolean selectCaptchaOnOff() {
-        String captchaOnOff = selectConfigByKey("sys.account.captchaOnOff");
+        String captchaEnabled = selectConfigByKey("sys.account.captchaEnabled");
         if (StringUtils.isEmpty(captchaOnOff)) {
             return true;
         }
-        return Convert.toBool(captchaOnOff);
+        return Convert.toBool(captchaEnabled);
     }
 
     /**
      * 查询参数配置列表
-     *
+     * 
      * @param config 参数配置信息
      * @return 参数配置集合
      */
@@ -120,7 +120,7 @@ public class SysConfigServiceImpl extends BaseServiceImpl<SysConfig> implements 
 
     /**
      * 新增参数配置
-     *
+     * 
      * @param config 参数配置信息
      * @return 结果
      */
@@ -183,6 +183,9 @@ public class SysConfigServiceImpl extends BaseServiceImpl<SysConfig> implements 
      * 清空参数缓存数据
      */
     @Override
+    public void clearConfigCache()
+    {
+        Collection<String> keys = redisCache.keys(CacheConstants.SYS_CONFIG_KEY + "*");
     public void clearConfigCache() {
         Collection<String> keys = redisCache.keys(Constants.SYS_CONFIG_KEY + "*");
         redisCache.deleteObject(keys);
@@ -215,11 +218,12 @@ public class SysConfigServiceImpl extends BaseServiceImpl<SysConfig> implements 
 
     /**
      * 设置cache key
-     *
+     * 
      * @param configKey 参数键
      * @return 缓存键key
      */
-    private String getCacheKey(String configKey) {
-        return Constants.SYS_CONFIG_KEY + configKey;
+    private String getCacheKey(String configKey)
+    {
+        return CacheConstants.SYS_CONFIG_KEY + configKey;
     }
 }
